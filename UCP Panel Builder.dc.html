@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/nocturne-56349b84-ffe9-4905-9825-98d3ee5d0820/styles.css">
+<script src="_ds/nocturne-56349b84-ffe9-4905-9825-98d3ee5d0820/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<meta name="omelette-owns-print" content="1">
+<style>
+  body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: var(--font-body); }
+  @media print {
+    @page { margin: 12mm; size: landscape; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .np { display: none !important; }
+    [data-print-scope="panel"] .print-bom { display: none !important; }
+    .print-sheet { padding-left: 0 !important; padding-right: 0 !important; }
+  }
+  a { color: var(--color-accent-300); text-decoration: none; }
+  a:hover { color: var(--color-accent-200); }
+  *:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div data-print-scope="{{ printScope }}" style="min-height: 100vh; background: var(--color-bg); position: absolute; left: 68px; top: -440px">
+
+  <header class="np" style="position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:22.4px;padding:11.2px 32px;background:rgba(22,24,38,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-divider)">
+    <div style="display:flex;align-items:baseline;gap:11.2px">
+      <span style="font-family:var(--font-heading);font-weight:500;font-size:15px;letter-spacing:0.02em">UCP Panel Builder</span>
+      <span style="font-size:12px;color:var(--color-neutral-500)">Middle Atlantic FK2 · 2RU</span>
+    </div>
+    <nav style="display:flex;align-items:center;gap:16.8px;font-size:13px">
+      <a href="#builder">Builder</a>
+      <a href="#bom">Parts list</a>
+      <a href="#catalog">Module catalog</a>
+      <sc-if value="{{ showExport }}" hint-placeholder-val="{{ true }}">
+        <button type="button" class="btn btn-primary" onClick="{{ onPrint }}" style="font-family:var(--font-body);font-size:12px;padding:5.6px 14px;border-radius:8px;cursor:pointer;background:transparent;color:var(--color-accent-200);border:1px solid var(--color-accent-600)" style-hover="background:var(--color-accent-900)">Export to PDF</button>
+      </sc-if>
+    </nav>
+  </header>
+
+  <section class="np" style="padding:67px 32px 45px;max-width:1240px">
+    <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-400);margin-bottom:16.8px">FK2 frame kit · 2 rack spaces</div>
+    <h1 style="font-family:var(--font-heading);font-weight:500;font-size:52px;line-height:1.06;margin:0 0 22.4px;max-width:18ch;text-wrap:pretty">Lay out a custom connector panel, five modules at a time.</h1>
+    <p style="margin:0;max-width:62ch;font-size:16px;line-height:1.6;color:var(--color-neutral-400);text-wrap:pretty">The FK2 is a 2RU frame that takes any combination of five UCP punchout modules across a single tier. Drag modules onto the frame below, then read off the parts list.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:0;margin-top:39px;border-top:1px solid var(--color-divider);max-width:900px">
+      <div style="flex:1 1 160px;padding:16.8px 22.4px 16.8px 0">
+        <div style="font-size:22px;font-family:var(--font-heading);font-weight:500">2RU</div>
+        <div style="font-size:12px;color:var(--color-neutral-500);margin-top:2.8px">3-1/2" of rack height</div>
+      </div>
+      <div style="flex:1 1 160px;padding:16.8px 22.4px">
+        <div style="font-size:22px;font-family:var(--font-heading);font-weight:500">5</div>
+        <div style="font-size:12px;color:var(--color-neutral-500);margin-top:2.8px">Module slots, any mix</div>
+      </div>
+      <div style="flex:1 1 160px;padding:16.8px 22.4px">
+        <div style="font-size:22px;font-family:var(--font-heading);font-weight:500">19"</div>
+        <div style="font-size:12px;color:var(--color-neutral-500);margin-top:2.8px">Standard rack width</div>
+      </div>
+      <div style="flex:1 1 160px;padding:16.8px 22.4px">
+        <div style="font-size:22px;font-family:var(--font-heading);font-weight:500">Aluminum</div>
+        <div style="font-size:12px;color:var(--color-neutral-500);margin-top:2.8px">Black brushed, anodized</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="builder" class="print-sheet" style="padding:33.6px 32px 0;max-width:1240px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:22.4px;flex-wrap:wrap;margin-bottom:22.4px">
+      <div>
+        <h2 style="font-family:var(--font-heading);font-weight:500;font-size:26px;margin:0">Frame layout</h2>
+        <sc-if value="{{ jobName }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent-400);margin-top:5.6px">{{ jobName }}</div>
+        </sc-if>
+      </div>
+      <div class="np" style="display:flex;align-items:center;gap:11.2px;font-size:12px;color:var(--color-neutral-500)">
+        <span>{{ statusText }}</span>
+        <button type="button" class="btn btn-ghost" onClick="{{ onAddFrame }}" style="font-size:12px;padding:5.6px 11.2px">+ Add FK2 frame</button>
+      </div>
+    </div>
+
+    <div style="display:grid;gap:22.4px">
+    <sc-for list="{{ frames }}" as="frame" hint-placeholder-count="1">
+    <div style="padding: 22.4px; border: 1px solid var(--color-divider); border-radius: 14px; background: linear-gradient(180deg,var(--color-surface),var(--color-bg)); break-inside: avoid; width: 1202px; height: 510px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16.8px;margin-bottom:11.2px">
+        <div style="display:flex;align-items:baseline;gap:11.2px">
+          <input type="text" value="{{ frame.name }}" onChange="{{ frame.onRename }}" placeholder="{{ frame.namePlaceholder }}" maxLength="28" title="Name this frame" style="font-family:var(--font-heading);font-weight:500;font-size:14px;letter-spacing:0.02em;color:var(--color-text);background:transparent;border:1px solid transparent;border-radius:4px;padding:2.8px 5.6px;width:180px" style-hover="border-color:var(--color-neutral-800)" style-focus="border-color:var(--color-accent-600);background:var(--color-bg)">
+          <span style="font-size:11px;color:var(--color-neutral-500)">{{ frame.status }}</span>
+        </div>
+        <div class="np" style="display:flex;gap:5.6px">
+          <button type="button" onClick="{{ frame.onReset }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:4px;cursor:pointer;background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">Empty frame</button>
+          <button type="button" onClick="{{ frame.onRemove }}" disabled="{{ frame.removeDisabled }}" title="{{ frame.removeTitle }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:4px;cursor:{{ frame.removeCursor }};opacity:{{ frame.removeOpacity }};background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">Remove frame</button>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:22.4px;align-items:flex-start">
+      <div style="flex:1 1 620px;min-width:0">
+      <div class="np" style="display:flex;width:100%;margin-bottom:8.4px">
+        <div style="flex:0 0 6.58%"></div>
+        <div style="flex:1 1 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:5.6px">
+          <sc-for list="{{ frame.slots }}" as="slot" hint-placeholder-count="5">
+            <button type="button" onClick="{{ slot.onClear }}" disabled="{{ slot.clearDisabled }}" title="{{ slot.clearTitle }}" style="display:flex;align-items:center;justify-content:center;gap:4px;padding:4px 0;font-family:var(--font-body);font-size:11px;letter-spacing:0.04em;border-radius:4px;cursor:{{ slot.clearCursor }};opacity:{{ slot.clearOpacity }};background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">✕ Clear</button>
+          </sc-for>
+        </div>
+        <div style="flex:0 0 6.58%"></div>
+      </div>
+      <div style="display:flex;width:100%;aspect-ratio:19 / 3.5;container-type:inline-size;background:var(--color-neutral-900);border:1px solid var(--color-neutral-700);border-radius:4px;overflow:hidden">
+
+        <div style="flex:0 0 6.58%;position:relative;border-right:1px solid var(--color-neutral-800);display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:9% 0">
+          <div style="width:26%;height:7%;border:1px solid var(--color-neutral-600);border-radius:99px"></div>
+          <div style="width:26%;height:7%;border:1px solid var(--color-neutral-600);border-radius:99px"></div>
+        </div>
+
+        <div style="flex:1 1 auto;display:grid;grid-template-columns:repeat(5,1fr)">
+          <sc-for list="{{ frame.slots }}" as="slot" hint-placeholder-count="5">
+            <div onDragOver="{{ slot.onDragOver }}" onDragLeave="{{ slot.onDragLeave }}" onDrop="{{ slot.onDrop }}" onClick="{{ slot.onClick }}" title="{{ slot.title }}" style="position:relative;border-right:1px solid var(--color-neutral-800);cursor:pointer;background:{{ slot.bg }};transition:background 120ms ease">
+              <div style="position: absolute; inset: 6% 5%; border: 1px dashed {{ slot.frameColor }}; border-radius: 2px"></div>
+              <sc-for list="{{ slot.holes }}" as="h" hint-placeholder-count="0">
+                <div style="position:absolute;inset:0;pointer-events:none">
+                  <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-400);border-radius:{{ h.r }};background:rgba(0,0,0,0.35)"></div>
+                  <div style="position:absolute;left:{{ h.labelLeft }}%;top:{{ h.labelTop }}%;width:{{ h.labelW }}%;text-align:center;font-size:max(6px,0.95cqw);line-height:1.1;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-neutral-200);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.label }}</div>
+                </div>
+              </sc-for>
+              <div style="position:absolute;left:0;right:0;bottom:4%;text-align:center;font-size:max(8px,1.15cqw);letter-spacing:0.08em;color:{{ slot.labelColor }};pointer-events:none">{{ slot.label }}</div>
+
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="flex:0 0 6.58%;position:relative;border-left:1px solid var(--color-neutral-800);display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:9% 0">
+          <div style="width:26%;height:7%;border:1px solid var(--color-neutral-600);border-radius:99px"></div>
+          <div style="width:26%;height:7%;border:1px solid var(--color-neutral-600);border-radius:99px"></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:11.2px;font-size:11px;color:var(--color-neutral-600)">
+        <span>Front elevation · schematic, not to scale for connector fit</span>
+        <span>19" × 3-1/2"</span>
+      </div>
+      </div>
+
+      <aside class="np" style="flex:1 1 210px;max-width:250px;border-left:1px solid var(--color-divider);padding-left:16.8px;align-self:stretch">
+        <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-500);margin-bottom:11.2px">Engraving labels</div>
+        <div style="display:grid;gap:11.2px">
+          <sc-for list="{{ frame.labelRows }}" as="row" hint-placeholder-count="2">
+            <div>
+              <div style="display:flex;align-items:baseline;gap:5.6px;margin-bottom:5.6px">
+                <span style="font-size:12px;font-weight:500">{{ row.code }}</span>
+                <span style="font-size:10px;color:var(--color-neutral-600)">{{ row.slotName }}</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px">
+                <sc-for list="{{ row.fields }}" as="f" hint-placeholder-count="2">
+                  <input class="input np" type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" maxLength="10" style="width:70px;font-family:var(--font-body);font-size:11px;padding:4px 5.6px;background:var(--color-bg);color:var(--color-text);border:1px solid var(--color-neutral-800);border-radius:4px">
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin:11.2px 0 0;font-size:10px;line-height:1.4;color:var(--color-neutral-600)">{{ frame.labelHint }}</p>
+      </aside>
+      </div>
+    </div>
+    </sc-for>
+    </div>
+    <button type="button" class="np" onClick="{{ onAddFrame }}" style="margin-top:16.8px;font-family:var(--font-body);font-size:12px;padding:8.4px 16.8px;border-radius:8px;cursor:pointer;background:transparent;color:var(--color-accent-200);border:1px dashed var(--color-accent-700)" style-hover="border-color:var(--color-accent-500);background:var(--color-accent-900)">+ Add another FK2 frame</button>
+  </section>
+
+  <section class="np" style="padding:39px 32px 0;max-width:1240px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:22.4px;flex-wrap:wrap;margin-bottom:16.8px">
+      <h3 style="font-family:var(--font-heading);font-weight:500;font-size:18px;margin:0">Module tray</h3>
+      <span style="font-size:12px;color:var(--color-neutral-500)">{{ trayHint }}</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:5.6px;margin-bottom:16.8px">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="7">
+        <button type="button" onClick="{{ c.onClick }}" style="font-family:var(--font-body);font-size:12px;padding:5.6px 11.2px;border-radius:99px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.border }}">{{ c.name }}</button>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8.4px">
+      <sc-for list="{{ tray }}" as="m" hint-placeholder-count="12">
+        <div draggable="true" onDragStart="{{ m.onDragStart }}" onDragEnd="{{ m.onDragEnd }}" onClick="{{ m.onClick }}" style="display:flex;gap:11.2px;align-items:center;padding:8.4px;border:1px solid {{ m.border }};border-radius:8px;background:{{ m.bg }};cursor:grab;user-select:none" style-hover="border-color:var(--color-accent-600)">
+          <div style="position:relative;flex:0 0 44px;height:44px;border:1px solid var(--color-neutral-700);border-radius:2px;background:var(--color-neutral-900)">
+            <sc-for list="{{ m.holes }}" as="h" hint-placeholder-count="0">
+              <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-400);border-radius:{{ h.r }}"></div>
+            </sc-for>
+          </div>
+          <div style="min-width:0">
+            <div style="font-size:13px;font-weight:500;letter-spacing:0.01em">{{ m.code }}</div>
+            <div style="font-size:11px;color:var(--color-neutral-500);line-height:1.35;text-wrap:pretty">{{ m.short }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="bom" class="print-bom print-sheet" style="padding:56px 32px 0;max-width:1240px">
+    <h2 style="font-family:var(--font-heading);font-weight:500;font-size:26px;margin:0 0 16.8px">Parts list</h2>
+    <table class="table" style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:8.4px 11.2px;width:64px">Qty</th>
+          <th style="text-align:left;padding:8.4px 11.2px;width:140px">Part #</th>
+          <th style="text-align:left;padding:8.4px 11.2px;width:120px">Short code</th>
+          <th style="text-align:left;padding:8.4px 11.2px">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <sc-for list="{{ bom }}" as="r" hint-placeholder-count="3">
+          <tr>
+            <td style="padding:8.4px 11.2px;color:var(--color-accent-300)">{{ r.qty }}</td>
+            <td style="padding:8.4px 11.2px;font-variant-numeric:tabular-nums">{{ r.map }}</td>
+            <td style="padding:8.4px 11.2px;color:var(--color-neutral-400)">{{ r.code }}</td>
+            <td style="padding:8.4px 11.2px;color:var(--color-neutral-300)">{{ r.name }}</td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:var(--color-neutral-600);margin-top:11.2px;max-width:70ch">Mounting hardware for the five modules ships with the FK2 frame kit. Empty slots should be filled with a blank or vented module.</p>
+  </section>
+
+  <section id="catalog" class="np" style="padding:56px 32px 78px;max-width:1240px">
+    <h2 style="font-family:var(--font-heading);font-weight:500;font-size:26px;margin:0 0 5.6px">Module catalog</h2>
+    <p style="margin:0 0 22.4px;font-size:14px;color:var(--color-neutral-500);max-width:60ch">Every module occupies one of the five slots. Punchouts are prepunched; no drilling required.</p>
+    <sc-for list="{{ catalog }}" as="g" hint-placeholder-count="4">
+      <div style="margin-bottom:33.6px">
+        <div style="display:flex;align-items:center;gap:11.2px;margin-bottom:11.2px">
+          <h4 style="font-family:var(--font-heading);font-weight:500;font-size:14px;margin:0;letter-spacing:0.02em">{{ g.name }}</h4>
+          <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--color-divider),transparent)"></div>
+        </div>
+        <table class="table" style="width:100%;border-collapse:collapse;font-size:13px">
+          <tbody>
+            <sc-for list="{{ g.items }}" as="m" hint-placeholder-count="3">
+              <tr>
+                <td style="padding:6px 11.2px;width:150px;font-variant-numeric:tabular-nums">{{ m.map }}</td>
+                <td style="padding:6px 11.2px;width:110px;color:var(--color-neutral-500)">{{ m.code }}</td>
+                <td style="padding:6px 11.2px;color:var(--color-neutral-300)">{{ m.name }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </sc-for>
+  </section>
+
+  <footer class="np" style="padding:22.4px 32px;border-top:1px solid var(--color-divider);font-size:11px;color:var(--color-neutral-600)">
+    Reference layout tool. Confirm connector fit and part numbers against the current Middle Atlantic UCP documentation before ordering.
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:900},&quot;showExport&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Export&quot;,&quot;label&quot;:&quot;Show Export to PDF button&quot;},&quot;printScope&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Panel + parts list&quot;,&quot;Panel only&quot;],&quot;default&quot;:&quot;Panel + parts list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Export&quot;,&quot;label&quot;:&quot;What the PDF contains&quot;},&quot;jobName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;cds2027&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Export&quot;,&quot;label&quot;:&quot;Job name printed on the sheet&quot;}}">
+const FACE = 3.4, USABLE = 3.15, USABLE_Y = 2.45, OFF_Y = 0.12;
+
+function grid(cols, rows, w, h, r) {
+  const out = [], cw = USABLE / cols, ch = USABLE_Y / rows, off = (FACE - USABLE) / 2;
+  const scale = h * rows > USABLE_Y ? USABLE_Y / (h * rows) : 1;
+  h = h * scale;
+  for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+    out.push({
+      left: +(((off + x * cw + (cw - w) / 2) / FACE) * 100).toFixed(2),
+      top: +(((OFF_Y + y * ch + (ch - h) / 2) / FACE) * 100).toFixed(2),
+      w: +((w / FACE) * 100).toFixed(2),
+      h: +((h / FACE) * 100).toFixed(2),
+      r: r
+    });
+  }
+  return out;
+}
+const R = (n) => '50%', SQ = '1px';
+
+// [code, name, short, holeFn]
+const CATALOG = [
+  ['XLR & Neutrik', [
+    ['UNIV1', 'One universal XLR female punchout — Neutrik FP/MP/MDL/FDL, small Speakon, Switchcraft, Cannon, Whirlwind', '1× XLR female', () => grid(1, 1, 0.94, 0.94, '50%')],
+    ['UNIV2', 'Two universal XLR female punchouts', '2× XLR female', () => grid(2, 1, 0.94, 0.94, '50%')],
+    ['UNIV3', 'Three universal XLR female punchouts', '3× XLR female', () => grid(3, 1, 0.94, 0.94, '50%')],
+    ['UNIV4', 'Four universal XLR female punchouts', '4× XLR female', () => grid(2, 2, 0.94, 0.94, '50%')],
+    ['UNIV6', 'Six universal XLR female punchouts', '6× XLR female', () => grid(3, 2, 0.94, 0.94, '50%')],
+    ['XLR IN\n', 'Six XLR male punchouts', '6× XLR male', () => grid(3, 2, 0.9, 0.9, '50%')]
+  ]],
+  ['Combo & circular', [
+    ['COMBO2', 'Two combination male / female XLR punchouts', '2× combo M/F', () => grid(2, 1, 0.94, 0.94, '50%')],
+    ['COMBO4', 'Four combination male / female XLR punchouts', '4× combo M/F', () => grid(2, 2, 0.94, 0.94, '50%')],
+    ['COMBO6', 'Six combination male / female XLR punchouts', '6× combo M/F', () => grid(3, 2, 0.9, 0.9, '50%')],
+    ['4SC1', 'One circular flange 4-bolt punchout — Cannon AP & EP, Neutrik NL8MPR / NL4MPR', '1× 4-bolt circular', () => grid(1, 1, 1.2, 1.2, '50%')],
+    ['4SC3', 'Three circular flange 4-bolt punchouts', '3× 4-bolt circular', () => grid(3, 1, 1.0, 1.0, '50%')],
+    ['SPX-19', 'One Socapex 19-pin punchout', '1× Socapex 19', () => grid(1, 1, 1.35, 1.35, '50%')]
+  ]],
+  ['BNC & video', [
+    ['1/2BNC1', 'One BNC punchout — fits 1/2" and 3/8" shells, most insulated shells and fuses', '1× BNC', () => grid(1, 1, 0.5, 0.5, '50%')],
+    ['1/2BNC2', 'Two BNC punchouts', '2× BNC', () => grid(2, 1, 0.5, 0.5, '50%')],
+    ['1/2BNC3', 'Three BNC punchouts', '3× BNC', () => grid(3, 1, 0.5, 0.5, '50%')],
+    ['1/2BNC4', 'Four BNC punchouts', '4× BNC', () => grid(2, 2, 0.5, 0.5, '50%')],
+    ['CANARE4', 'Four Canare BNC punchouts', '4× Canare BNC', () => grid(4, 1, 0.5, 0.5, '50%')]
+  ]],
+  ['Multipin', [
+    ['1ELCO38', 'One 38-pin Elco multipin punchout', '1× Elco 38', () => grid(1, 1, 1.7, 0.85, SQ)],
+    ['1ELCO56', 'One 56-pin Elco multipin punchout', '1× Elco 56', () => grid(1, 1, 2.0, 0.9, SQ)],
+    ['1ELCO90', 'One 90-pin Elco multipin punchout', '1× Elco 90', () => grid(1, 1, 2.4, 0.95, SQ)],
+    ['2ELCO38', 'Two 38-pin Elco multipin punchouts', '2× Elco 38', () => grid(1, 2, 1.7, 0.85, SQ)],
+    ['1W1', 'One Whirlwind multipin punchout', '1× Whirlwind', () => grid(1, 1, 1.8, 1.0, SQ)],
+    ['1W2', 'Two Whirlwind multipin punchouts', '2× Whirlwind', () => grid(1, 2, 1.8, 0.9, SQ)],
+    ['2DL96', 'Two Cannon DL series 96-pin multipin punchouts', '2× Cannon DL96', () => grid(1, 2, 2.2, 0.85, SQ)]
+  ]],
+  ['Data & serial', [
+    ['1DB9', 'One DB9 punchout', '1× DB9', () => grid(1, 1, 1.2, 0.5, SQ)],
+    ['2DB9', 'Two DB9 punchouts', '2× DB9', () => grid(1, 2, 1.2, 0.5, SQ)],
+    ['4DB9', 'Four DB9 punchouts', '4× DB9', () => grid(2, 2, 1.2, 0.5, SQ)],
+    ['1DB15', 'One DB15 / HD15 (SVGA) punchout', '1× DB15', () => grid(1, 1, 1.35, 0.5, SQ)],
+    ['2DB15', 'Two DB15 / HD15 punchouts', '2× DB15', () => grid(1, 2, 1.35, 0.5, SQ)],
+    ['1DB25', 'One DB25 punchout', '1× DB25', () => grid(1, 1, 1.9, 0.5, SQ)],
+    ['2DB25', 'Two DB25 punchouts', '2× DB25', () => grid(1, 2, 1.9, 0.5, SQ)],
+    ['2DB37', 'Two DB37 punchouts', '2× DB37', () => grid(1, 2, 2.5, 0.5, SQ)]
+  ]],
+  ['Jacks & drilled holes', [
+    ['1/4X2', 'Two 1/4" holes — RCA jacks, some switches and LEDs', '2× 1/4" hole', () => grid(2, 1, 0.25, 0.25, '50%')],
+    ['1/4X4', 'Four 1/4" holes', '4× 1/4" hole', () => grid(2, 2, 0.25, 0.25, '50%')],
+    ['3/8X2', 'Two 3/8" holes — phone jacks, F connectors, some switches', '2× 3/8" hole', () => grid(2, 1, 0.375, 0.375, '50%')],
+    ['3/8X4', 'Four 3/8" holes', '4× 3/8" hole', () => grid(2, 2, 0.375, 0.375, '50%')],
+    ['3/8X6', 'Six 3/8" holes', '6× 3/8" hole', () => grid(3, 2, 0.375, 0.375, '50%')],
+    ['3/8X8', 'Eight 3/8" holes', '8× 3/8" hole', () => grid(4, 2, 0.375, 0.375, '50%')],
+    ['7/16X4', 'Four 7/16" holes — Switchcraft #11', '4× 7/16" hole', () => grid(2, 2, 0.4375, 0.4375, '50%')],
+    ['BANA2', 'Two universal dual banana punchouts', '2× dual banana', () => grid(2, 1, 0.85, 0.4, SQ)],
+    ['BANA4', 'Four universal dual banana punchouts', '4× dual banana', () => grid(2, 2, 0.85, 0.4, SQ)],
+    ['BANA6', 'Six universal dual banana punchouts', '6× dual banana', () => grid(2, 3, 0.85, 0.4, SQ)]
+  ]],
+  ['Power', [
+    ['DUP1', 'One duplex AC outlet punchout', '1× duplex outlet', () => grid(1, 1, 1.35, 2.6, SQ)],
+    ['DUP2', 'Two duplex AC outlet punchouts', '2× duplex outlet', () => grid(2, 1, 1.3, 2.6, SQ)],
+    ['TW2B', 'Two twistlock punchouts — oval pattern, fits most brands', '2× twistlock', () => grid(2, 1, 1.3, 1.3, '50%')],
+    ['TW3B', 'Three twistlock punchouts', '3× twistlock', () => grid(3, 1, 0.95, 0.95, '50%')]
+  ]],
+  ['Blank & vented', [
+    ['UCPB1', 'Single blank module — fills an unused slot', 'Blank', () => []],
+    ['VT', 'Single vented blank module — fills an unused slot with ventilation', 'Vented blank', () => grid(1, 6, 2.4, 0.14, SQ)]
+  ]]
+];
+
+// Part numbers as published: the UCP- prefix appears on the XLR-female
+// family and the vent module; every other module is listed by its bare code.
+const PART_NO = {
+  UNIV1: 'UCP-UNIV1', UNIV2: 'UCP-UNIV2', UNIV3: 'UCP-UNIV3',
+  UNIV4: 'UCP-UNIV4', UNIV6: 'UCP-UNIV6', VT: 'UCP-VT'
+};
+
+// Ventilation slats and blanks are not connector punchouts — nothing to engrave.
+const NO_LABELS = { VT: true, UCPB1: true };
+
+const BY_CODE = {};
+const ALL = [];
+CATALOG.forEach(([cat, items]) => items.forEach(([code, name, short, fn]) => {
+  const m = { code, name, short, cat, map: PART_NO[code] || code, holes: fn(), labelable: !NO_LABELS[code] };
+  BY_CODE[code] = m;
+  ALL.push(m);
+}));
+
+function dropSlotLabels(labels, i) {
+  const next = {};
+  Object.keys(labels).forEach((k) => { if (k.split(':')[0] !== String(i)) next[k] = labels[k]; });
+  return next;
+}
+
+class Component extends DCLogic {
+  state = {
+    frames: [{ name: 'Frame 1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], labels: {} }],
+    filter: 'All', picked: null, over: ''
+  };
+
+  patchFrame(fi, patch) {
+    this.setState((s) => ({
+      frames: s.frames.map((f, k) => (k === fi ? Object.assign({}, f, typeof patch === 'function' ? patch(f) : patch) : f))
+    }));
+  }
+
+  setLabel(fi, key, v) {
+    this.patchFrame(fi, (f) => {
+      const labels = Object.assign({}, f.labels);
+      labels[key] = v;
+      return { labels };
+    });
+  }
+
+  place(fi, i, code) {
+    this.setState((s) => {
+      const f = s.frames[fi];
+      if (f.slots[i] === code) return { over: '', picked: null };
+      const slots = f.slots.slice();
+      slots[i] = code;
+      const frames = s.frames.slice();
+      frames[fi] = { name: f.name, slots, labels: dropSlotLabels(f.labels, i) };
+      return { frames, over: '', picked: null };
+    });
+  }
+
+  clearSlot(fi, i) {
+    this.patchFrame(fi, (f) => {
+      const slots = f.slots.slice();
+      slots[i] = null;
+      return { slots, labels: dropSlotLabels(f.labels, i) };
+    });
+  }
+
+  renderVals() {
+    const { frames, filter, picked, over } = this.state;
+    const filled = frames.reduce((n, f) => n + f.slots.filter(Boolean).length, 0);
+
+    const holesFor = (labels, code, i) => (code ? BY_CODE[code].holes : []).map((h, j) => ({
+      left: h.left, top: h.top, w: h.w, h: h.h, r: h.r,
+      label: (code && BY_CODE[code].labelable && labels[i + ':' + j]) || '',
+      labelLeft: +(h.left + h.w / 2 - 14).toFixed(2),
+      labelTop: +(h.top + h.h + 1.2).toFixed(2),
+      labelW: 28
+    }));
+
+    const frameVals = frames.map((f, fi) => ({
+      name: f.name ?? '',
+      namePlaceholder: 'Frame ' + (fi + 1),
+      onRename: (e) => this.patchFrame(fi, { name: e.target.value }),
+      status: f.slots.filter(Boolean).length + ' of 5 slots filled',
+      removeDisabled: frames.length < 2,
+      removeCursor: frames.length < 2 ? 'default' : 'pointer',
+      removeOpacity: frames.length < 2 ? 0.35 : 1,
+      removeTitle: frames.length < 2 ? 'A project needs at least one frame' : 'Remove frame ' + (fi + 1),
+      onRemove: () => this.setState((s) => (s.frames.length < 2 ? {} : { frames: s.frames.filter((x, k) => k !== fi) })),
+      onReset: () => this.patchFrame(fi, { slots: [null, null, null, null, null], labels: {} }),
+      slots: f.slots.map((code, i) => {
+        const m = code ? BY_CODE[code] : null;
+        const key = fi + '/' + i;
+        return {
+          label: m ? m.code : 'Slot ' + (i + 1),
+          holes: holesFor(f.labels, code, i),
+          title: m ? m.name : 'Empty — drag a module here',
+          bg: over === key ? 'var(--color-accent-900)' : 'transparent',
+          frameColor: over === key ? 'var(--color-accent-500)' : (m ? 'var(--color-neutral-800)' : 'var(--color-neutral-700)'),
+          labelColor: m ? 'var(--color-neutral-400)' : 'var(--color-neutral-600)',
+          onDragOver: (e) => { e.preventDefault(); if (this.state.over !== key) this.setState({ over: key }); },
+          onDragLeave: () => { if (this.state.over === key) this.setState({ over: '' }); },
+          onDrop: (e) => {
+            e.preventDefault();
+            const code2 = e.dataTransfer.getData('text/plain');
+            if (code2 && BY_CODE[code2]) this.place(fi, i, code2);
+            else this.setState({ over: '' });
+          },
+          filled: !!m,
+          clearDisabled: !m,
+          clearTitle: m ? 'Remove ' + m.code + ' from slot ' + (i + 1) : 'Slot ' + (i + 1) + ' is empty',
+          clearCursor: m ? 'pointer' : 'default',
+          clearOpacity: m ? 1 : 0.35,
+          onClick: () => { if (picked) this.place(fi, i, picked); },
+          onClear: (e) => { e.stopPropagation(); this.clearSlot(fi, i); }
+        };
+      })
+    }));
+
+    const catNames = ['All'].concat(CATALOG.map(([c]) => c));
+    const cats = catNames.map((name) => ({
+      name,
+      bg: filter === name ? 'var(--color-accent-800)' : 'transparent',
+      fg: filter === name ? 'var(--color-accent-200)' : 'var(--color-neutral-400)',
+      border: filter === name ? 'var(--color-accent-600)' : 'var(--color-neutral-800)',
+      onClick: () => this.setState({ filter: name })
+    }));
+
+    const tray = ALL.filter((m) => filter === 'All' || m.cat === filter).map((m) => ({
+      code: m.code,
+      short: m.short,
+      holes: m.holes,
+      bg: picked === m.code ? 'var(--color-accent-900)' : 'var(--color-surface)',
+      border: picked === m.code ? 'var(--color-accent-500)' : 'var(--color-neutral-800)',
+      onDragStart: (e) => { e.dataTransfer.setData('text/plain', m.code); e.dataTransfer.effectAllowed = 'copy'; },
+      onDragEnd: () => this.setState({ over: '' }),
+      onClick: () => this.setState((s) => ({ picked: s.picked === m.code ? null : m.code }))
+    }));
+
+    const counts = {};
+    frames.forEach((f) => f.slots.forEach((c) => { if (c) counts[c] = (counts[c] || 0) + 1; }));
+    const bom = [{ qty: frames.length, map: 'FK2', code: 'FK2', name: '2-space (3-1/2") UCP frame kit with mounting hardware' }]
+      .concat(Object.keys(counts).map((c) => ({ qty: counts[c], map: BY_CODE[c].map, code: BY_CODE[c].code, name: BY_CODE[c].name })));
+
+    frameVals.forEach((fv, fi) => {
+      const f = frames[fi];
+      const rows = [];
+      f.slots.forEach((code, i) => {
+        if (!code || !BY_CODE[code].labelable || !BY_CODE[code].holes.length) return;
+        rows.push({
+          code: BY_CODE[code].code,
+          slotName: 'Slot ' + (i + 1),
+          fields: BY_CODE[code].holes.map((h, j) => ({
+            value: f.labels[i + ':' + j] || '',
+            placeholder: 'Hole ' + (j + 1),
+            onChange: (e) => this.setLabel(fi, i + ':' + j, e.target.value)
+          }))
+        });
+      });
+      fv.labelRows = rows;
+      fv.labelHint = rows.length
+        ? 'Up to 10 characters each — text prints under the punchout.'
+        : 'Place a module with punchouts to label it.';
+    });
+
+    const scope = this.props.printScope ?? 'Panel + parts list';
+
+    return {
+      showExport: this.props.showExport ?? true,
+      printScope: scope === 'Panel only' ? 'panel' : 'full',
+      jobName: this.props.jobName ?? '',
+      onPrint: () => window.print(),
+      frames: frameVals,
+      cats,
+      tray,
+      bom,
+      catalog: CATALOG.map(([name, items]) => ({ name, items: items.map(([code]) => BY_CODE[code]) })),
+      statusText: frames.length + (frames.length === 1 ? ' frame · ' : ' frames · ') + filled + ' of ' + frames.length * 5 + ' slots filled',
+      trayHint: picked ? 'Now click a slot to place ' + picked : 'Drag onto a slot, or click a module then a slot',
+      onAddFrame: () => this.setState((s) => ({
+        frames: s.frames.concat([{ name: 'Frame ' + (s.frames.length + 1), slots: [null, null, null, null, null], labels: {} }])
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>
