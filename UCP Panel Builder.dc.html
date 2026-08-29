@@ -10,6 +10,7 @@
 <helmet>
 <link rel="stylesheet" href="_ds/nocturne-56349b84-ffe9-4905-9825-98d3ee5d0820/styles.css">
 <script src="_ds/nocturne-56349b84-ffe9-4905-9825-98d3ee5d0820/_ds_bundle.js"></script>
+<script src="./image-slot.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
@@ -24,17 +25,19 @@
     .print-sheet { padding-left: 0 !important; padding-right: 0 !important; }
   }
   a { color: var(--color-accent-300); text-decoration: none; }
+  .slot-engrave::placeholder { color: var(--color-neutral-400); opacity: 1; letter-spacing: 0.14em; }
+  .print-only { display: none; }
+  @media print { .print-only { display: block !important; } }
   a:hover { color: var(--color-accent-200); }
   *:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 </style>
 </helmet>
 
-<div data-print-scope="{{ printScope }}" style="min-height: 100vh; background: var(--color-bg); position: absolute; left: 68px; top: -440px">
+<div data-print-scope="{{ printScope }}" style="min-height: 100vh; background: var(--color-bg)">
 
   <header class="np" style="position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:22.4px;padding:11.2px 32px;background:rgba(22,24,38,0.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--color-divider)">
-    <div style="display:flex;align-items:baseline;gap:11.2px">
+    <div style="display:flex;align-items:center;gap:14px">
       <span style="font-family:var(--font-heading);font-weight:500;font-size:15px;letter-spacing:0.02em">UCP Panel Builder</span>
-      <span style="font-size:12px;color:var(--color-neutral-500)">Middle Atlantic FK2 · 2RU</span>
     </div>
     <nav style="display:flex;align-items:center;gap:16.8px;font-size:13px">
       <a href="#builder">Builder</a>
@@ -46,31 +49,23 @@
     </nav>
   </header>
 
-  <section class="np" style="padding:67px 32px 45px;max-width:1240px">
-    <div style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-400);margin-bottom:16.8px">FK2 frame kit · 2 rack spaces</div>
-    <h1 style="font-family:var(--font-heading);font-weight:500;font-size:52px;line-height:1.06;margin:0 0 22.4px;max-width:18ch;text-wrap:pretty">Lay out a custom connector panel, five modules at a time.</h1>
-    <p style="margin:0;max-width:62ch;font-size:16px;line-height:1.6;color:var(--color-neutral-400);text-wrap:pretty">The FK2 is a 2RU frame that takes any combination of five UCP punchout modules across a single tier. Drag modules onto the frame below, then read off the parts list.</p>
-    <div style="display:flex;flex-wrap:wrap;gap:0;margin-top:39px;border-top:1px solid var(--color-divider);max-width:900px">
-      <div style="flex:1 1 160px;padding:16.8px 22.4px 16.8px 0">
-        <div style="font-size:22px;font-family:var(--font-heading);font-weight:500">2RU</div>
-        <div style="font-size:12px;color:var(--color-neutral-500);margin-top:2.8px">3-1/2" of rack height</div>
+  <section class="np" style="padding:39px 32px 22.4px;max-width:1460px;display:flex;align-items:flex-end;justify-content:space-between;gap:33.6px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:22.4px">
+      
+      <div>
+        <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-400);margin-bottom:8.4px">Middle Atlantic FK2 frame kit</div>
+        <h1 style="font-family:var(--font-heading);font-weight:500;font-size:34px;line-height:1.1;margin:0">Five modules, one 2RU panel.</h1>
       </div>
-      <div style="flex:1 1 160px;padding:16.8px 22.4px">
-        <div style="font-size:22px;font-family:var(--font-heading);font-weight:500">5</div>
-        <div style="font-size:12px;color:var(--color-neutral-500);margin-top:2.8px">Module slots, any mix</div>
-      </div>
-      <div style="flex:1 1 160px;padding:16.8px 22.4px">
-        <div style="font-size:22px;font-family:var(--font-heading);font-weight:500">19"</div>
-        <div style="font-size:12px;color:var(--color-neutral-500);margin-top:2.8px">Standard rack width</div>
-      </div>
-      <div style="flex:1 1 160px;padding:16.8px 22.4px">
-        <div style="font-size:22px;font-family:var(--font-heading);font-weight:500">Aluminum</div>
-        <div style="font-size:12px;color:var(--color-neutral-500);margin-top:2.8px">Black brushed, anodized</div>
-      </div>
+    </div>
+    <div style="display:flex;gap:0;font-size:12px;color:var(--color-neutral-500)">
+      <span style="padding-right:16.8px">2RU · 3-1/2"</span>
+      <span style="padding:0 16.8px;border-left:1px solid var(--color-divider)">5 slots</span>
+      <span style="padding:0 16.8px;border-left:1px solid var(--color-divider)">19" rack</span>
+      <span style="padding-left:16.8px;border-left:1px solid var(--color-divider)">Black anodized aluminum</span>
     </div>
   </section>
 
-  <section id="builder" class="print-sheet" style="padding:33.6px 32px 0;max-width:1240px">
+  <section id="builder" class="print-sheet" style="padding:33.6px 32px 0;max-width:1460px">
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:22.4px;flex-wrap:wrap;margin-bottom:22.4px">
       <div>
         <h2 style="font-family:var(--font-heading);font-weight:500;font-size:26px;margin:0">Frame layout</h2>
@@ -78,18 +73,53 @@
           <div style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-accent-400);margin-top:5.6px">{{ jobName }}</div>
         </sc-if>
       </div>
-      <div class="np" style="display:flex;align-items:center;gap:11.2px;font-size:12px;color:var(--color-neutral-500)">
+      <div class="np" style="display:flex;align-items:center;gap:11.2px;font-size:12px;color:var(--color-neutral-500);flex-wrap:wrap">
         <span>{{ statusText }}</span>
+        <span style="font-size:11px;color:var(--color-neutral-600)">{{ saveText }}</span>
+        <button type="button" class="btn btn-ghost" onClick="{{ onDownload }}" style="font-size:12px;padding:5.6px 11.2px">Save file</button>
+        <label class="btn btn-ghost" style="font-size:12px;padding:5.6px 11.2px;cursor:pointer;margin:0">Open file<input type="file" accept="application/json,.json" onChange="{{ onUpload }}" style="display:none"></label>
         <button type="button" class="btn btn-ghost" onClick="{{ onAddFrame }}" style="font-size:12px;padding:5.6px 11.2px">+ Add FK2 frame</button>
       </div>
     </div>
 
+    <div style="display:flex;align-items:flex-start;gap:22.4px">
+
+      <aside class="np" style="flex: 0 0 252px; position: sticky; top: 52px; align-self: flex-start; max-height: calc(100vh - 72px); overflow: auto; padding-right: 16.8px; border-right: 1px solid var(--color-divider); width: 258px; height: 898px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:11.2px;margin-bottom:11.2px">
+          <h3 style="font-family:var(--font-heading);font-weight:500;font-size:15px;margin:0">Module tray</h3>
+        </div>
+        <p style="margin:0 0 11.2px;font-size:11px;line-height:1.4;color:var(--color-neutral-500)">{{ trayHint }}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:11.2px">
+          <sc-for list="{{ cats }}" as="c" hint-placeholder-count="7">
+            <button type="button" onClick="{{ c.onClick }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:99px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.border }}">{{ c.name }}</button>
+          </sc-for>
+        </div>
+        <div style="display:grid;gap:5.6px">
+          <sc-for list="{{ tray }}" as="m" hint-placeholder-count="12">
+            <div draggable="true" onDragStart="{{ m.onDragStart }}" onDragEnd="{{ m.onDragEnd }}" onClick="{{ m.onClick }}" style="display:flex;gap:8.4px;align-items:center;padding:5.6px;border:1px solid {{ m.border }};border-radius:8px;background:{{ m.bg }};cursor:grab;user-select:none" style-hover="border-color:var(--color-accent-600)">
+              <div style="position:relative;flex:0 0 38px;height:38px;border:1px solid var(--color-neutral-700);border-radius:2px;background:var(--color-neutral-900)">
+                <sc-for list="{{ m.holes }}" as="h" hint-placeholder-count="0">
+                  <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-400);border-radius:{{ h.r }}">
+                    <div style="position:absolute;inset:{{ h.ringInset }};border:1px solid {{ h.ringColor }};border-radius:{{ h.r }}"></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="min-width:0">
+                <div style="font-size:12px;font-weight:500;letter-spacing:0.01em">{{ m.code }}</div>
+                <div style="font-size:10px;color:var(--color-neutral-500);line-height:1.35;text-wrap:pretty">{{ m.short }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </aside>
+
+      <div style="flex:1 1 640px;min-width:0">
     <div style="display:grid;gap:22.4px">
     <sc-for list="{{ frames }}" as="frame" hint-placeholder-count="1">
-    <div style="padding: 22.4px; border: 1px solid var(--color-divider); border-radius: 14px; background: linear-gradient(180deg,var(--color-surface),var(--color-bg)); break-inside: avoid; width: 1202px; height: 510px">
+    <div style="padding:22.4px;border:1px solid var(--color-divider);border-radius:14px;background:linear-gradient(180deg,var(--color-surface),var(--color-bg));break-inside:avoid">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16.8px;margin-bottom:11.2px">
         <div style="display:flex;align-items:baseline;gap:11.2px">
-          <input type="text" value="{{ frame.name }}" onChange="{{ frame.onRename }}" placeholder="{{ frame.namePlaceholder }}" maxLength="28" title="Name this frame" style="font-family:var(--font-heading);font-weight:500;font-size:14px;letter-spacing:0.02em;color:var(--color-text);background:transparent;border:1px solid transparent;border-radius:4px;padding:2.8px 5.6px;width:180px" style-hover="border-color:var(--color-neutral-800)" style-focus="border-color:var(--color-accent-600);background:var(--color-bg)">
+          <input type="text" value="{{ frame.name }}" onChange="{{ frame.onRename }}" placeholder="{{ frame.namePlaceholder }}" maxLength="28" title="Name this frame" style="font-family: var(--font-heading); font-weight: 500; font-size: 14px; letter-spacing: 0.02em; color: var(--color-text); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 2.8px 5.6px; width: 180px" style-hover="border-color:var(--color-neutral-800)" style-focus="border-color:var(--color-accent-600);background:var(--color-bg)">
           <span style="font-size:11px;color:var(--color-neutral-500)">{{ frame.status }}</span>
         </div>
         <div class="np" style="display:flex;gap:5.6px">
@@ -108,7 +138,7 @@
         </div>
         <div style="flex:0 0 6.58%"></div>
       </div>
-      <div style="display:flex;width:100%;aspect-ratio:19 / 3.5;container-type:inline-size;background:var(--color-neutral-900);border:1px solid var(--color-neutral-700);border-radius:4px;overflow:hidden">
+      <div style="display:flex;width:100%;aspect-ratio:19 / 3.5;container-type:inline-size;background:linear-gradient(180deg,var(--color-neutral-800),var(--color-neutral-900) 42%,var(--color-neutral-900));border:1px solid var(--color-neutral-700);border-radius:5px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(233,233,237,0.06),var(--shadow-md)">
 
         <div style="flex:0 0 6.58%;position:relative;border-right:1px solid var(--color-neutral-800);display:flex;flex-direction:column;justify-content:space-around;align-items:center;padding:9% 0">
           <div style="width:26%;height:7%;border:1px solid var(--color-neutral-600);border-radius:99px"></div>
@@ -118,14 +148,24 @@
         <div style="flex:1 1 auto;display:grid;grid-template-columns:repeat(5,1fr)">
           <sc-for list="{{ frame.slots }}" as="slot" hint-placeholder-count="5">
             <div onDragOver="{{ slot.onDragOver }}" onDragLeave="{{ slot.onDragLeave }}" onDrop="{{ slot.onDrop }}" onClick="{{ slot.onClick }}" title="{{ slot.title }}" style="position:relative;border-right:1px solid var(--color-neutral-800);cursor:pointer;background:{{ slot.bg }};transition:background 120ms ease">
-              <div style="position: absolute; inset: 6% 5%; border: 1px dashed {{ slot.frameColor }}; border-radius: 2px"></div>
+              <div style="position:absolute;inset:5% 4%;border:1px {{ slot.frameStyle }} {{ slot.frameColor }};border-radius:3px;box-shadow:inset 0 1px 0 rgba(233,233,237,0.05)"></div>
               <sc-for list="{{ slot.holes }}" as="h" hint-placeholder-count="0">
                 <div style="position:absolute;inset:0;pointer-events:none">
-                  <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-400);border-radius:{{ h.r }};background:rgba(0,0,0,0.35)"></div>
+                  <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-300);border-radius:{{ h.r }};background:rgba(0,0,0,0.55);box-shadow:inset 0 1px 2px rgba(0,0,0,0.7),0 1px 0 rgba(233,233,237,0.05)">
+                    <div style="position:absolute;inset:{{ h.ringInset }};border:1px solid {{ h.ringColor }};border-radius:{{ h.r }}"></div>
+                    <sc-for list="{{ h.pins }}" as="p" hint-placeholder-count="0">
+                      <div style="position:absolute;left:{{ p.left }}%;top:{{ p.top }}%;width:{{ p.w }}%;height:{{ p.h }}%;background:var(--color-neutral-400);border-radius:50%"></div>
+                    </sc-for>
+                  </div>
+                  <sc-for list="{{ h.screws }}" as="s" hint-placeholder-count="0">
+                    <div style="position:absolute;left:{{ s.left }}%;top:{{ s.top }}%;width:{{ s.d }}%;height:{{ s.d }}%;border:1px solid var(--color-neutral-500);border-radius:50%;background:rgba(0,0,0,0.4)"></div>
+                  </sc-for>
                   <div style="position:absolute;left:{{ h.labelLeft }}%;top:{{ h.labelTop }}%;width:{{ h.labelW }}%;text-align:center;font-size:max(6px,0.95cqw);line-height:1.1;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-neutral-200);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.label }}</div>
                 </div>
               </sc-for>
-              <div style="position:absolute;left:0;right:0;bottom:4%;text-align:center;font-size:max(8px,1.15cqw);letter-spacing:0.08em;color:{{ slot.labelColor }};pointer-events:none">{{ slot.label }}</div>
+              <input class="np slot-engrave" type="text" value="{{ slot.nameValue }}" onChange="{{ slot.onRename }}" onClick="{{ slot.onNameClick }}" placeholder="{{ slot.namePlaceholder }}" maxLength="18" title="Rename this slot" style="position:absolute;left:8%;right:8%;bottom:7%;width:84%;box-sizing:border-box;text-align:center;font-family:var(--font-body);font-size:max(10px,1.25cqw);letter-spacing:0.14em;text-transform:uppercase;padding:1px 2px;background:transparent;color:{{ slot.labelColor }};border:1px solid transparent;border-radius:3px" style-hover="border-color:var(--color-neutral-700)" style-focus="border-color:var(--color-accent-600);background:var(--color-bg);color:var(--color-text)">
+              <div class="print-only" style="position:absolute;left:8%;right:8%;bottom:7%;text-align:center;font-size:max(10px,1.25cqw);letter-spacing:0.14em;text-transform:uppercase;color:{{ slot.labelColor }}">{{ slot.label }}</div>
+              
 
             </div>
           </sc-for>
@@ -140,9 +180,7 @@
         <span>Front elevation · schematic, not to scale for connector fit</span>
         <span>19" × 3-1/2"</span>
       </div>
-      </div>
-
-      <aside class="np" style="flex:1 1 210px;max-width:250px;border-left:1px solid var(--color-divider);padding-left:16.8px;align-self:stretch">
+      </div><aside class="np" style="flex:1 1 210px;border-left:1px solid var(--color-divider);padding-left:16.8px">
         <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-500);margin-bottom:11.2px">Engraving labels</div>
         <div style="display:grid;gap:11.2px">
           <sc-for list="{{ frame.labelRows }}" as="row" hint-placeholder-count="2">
@@ -161,39 +199,18 @@
         </div>
         <p style="margin:11.2px 0 0;font-size:10px;line-height:1.4;color:var(--color-neutral-600)">{{ frame.labelHint }}</p>
       </aside>
+
+      
       </div>
     </div>
     </sc-for>
     </div>
     <button type="button" class="np" onClick="{{ onAddFrame }}" style="margin-top:16.8px;font-family:var(--font-body);font-size:12px;padding:8.4px 16.8px;border-radius:8px;cursor:pointer;background:transparent;color:var(--color-accent-200);border:1px dashed var(--color-accent-700)" style-hover="border-color:var(--color-accent-500);background:var(--color-accent-900)">+ Add another FK2 frame</button>
+      </div>
+    </div>
   </section>
 
-  <section class="np" style="padding:39px 32px 0;max-width:1240px">
-    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:22.4px;flex-wrap:wrap;margin-bottom:16.8px">
-      <h3 style="font-family:var(--font-heading);font-weight:500;font-size:18px;margin:0">Module tray</h3>
-      <span style="font-size:12px;color:var(--color-neutral-500)">{{ trayHint }}</span>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:5.6px;margin-bottom:16.8px">
-      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="7">
-        <button type="button" onClick="{{ c.onClick }}" style="font-family:var(--font-body);font-size:12px;padding:5.6px 11.2px;border-radius:99px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.border }}">{{ c.name }}</button>
-      </sc-for>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8.4px">
-      <sc-for list="{{ tray }}" as="m" hint-placeholder-count="12">
-        <div draggable="true" onDragStart="{{ m.onDragStart }}" onDragEnd="{{ m.onDragEnd }}" onClick="{{ m.onClick }}" style="display:flex;gap:11.2px;align-items:center;padding:8.4px;border:1px solid {{ m.border }};border-radius:8px;background:{{ m.bg }};cursor:grab;user-select:none" style-hover="border-color:var(--color-accent-600)">
-          <div style="position:relative;flex:0 0 44px;height:44px;border:1px solid var(--color-neutral-700);border-radius:2px;background:var(--color-neutral-900)">
-            <sc-for list="{{ m.holes }}" as="h" hint-placeholder-count="0">
-              <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-400);border-radius:{{ h.r }}"></div>
-            </sc-for>
-          </div>
-          <div style="min-width:0">
-            <div style="font-size:13px;font-weight:500;letter-spacing:0.01em">{{ m.code }}</div>
-            <div style="font-size:11px;color:var(--color-neutral-500);line-height:1.35;text-wrap:pretty">{{ m.short }}</div>
-          </div>
-        </div>
-      </sc-for>
-    </div>
-  </section>
+  
 
   <section id="bom" class="print-bom print-sheet" style="padding:56px 32px 0;max-width:1240px">
     <h2 style="font-family:var(--font-heading);font-weight:500;font-size:26px;margin:0 0 16.8px">Parts list</h2>
@@ -248,7 +265,6 @@
     Reference layout tool. Confirm connector fit and part numbers against the current Middle Atlantic UCP documentation before ordering.
   </footer>
 </div>
-
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:900},&quot;showExport&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Export&quot;,&quot;label&quot;:&quot;Show Export to PDF button&quot;},&quot;printScope&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Panel + parts list&quot;,&quot;Panel only&quot;],&quot;default&quot;:&quot;Panel + parts list&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Export&quot;,&quot;label&quot;:&quot;What the PDF contains&quot;},&quot;jobName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;cds2027&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Export&quot;,&quot;label&quot;:&quot;Job name printed on the sheet&quot;}}">
 const FACE = 3.4, USABLE = 3.15, USABLE_Y = 2.45, OFF_Y = 0.12;
@@ -257,10 +273,11 @@ function grid(cols, rows, w, h, r) {
   const out = [], cw = USABLE / cols, ch = USABLE_Y / rows, off = (FACE - USABLE) / 2;
   const scale = h * rows > USABLE_Y ? USABLE_Y / (h * rows) : 1;
   h = h * scale;
+  const offY = (FACE - USABLE_Y) / 2 - 0.06; // centered on the plate
   for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
     out.push({
       left: +(((off + x * cw + (cw - w) / 2) / FACE) * 100).toFixed(2),
-      top: +(((OFF_Y + y * ch + (ch - h) / 2) / FACE) * 100).toFixed(2),
+      top: +(((offY + y * ch + (ch - h) / 2) / FACE) * 100).toFixed(2),
       w: +((w / FACE) * 100).toFixed(2),
       h: +((h / FACE) * 100).toFixed(2),
       r: r
@@ -269,6 +286,76 @@ function grid(cols, rows, w, h, r) {
   return out;
 }
 const R = (n) => '50%', SQ = '1px';
+
+// Punchout family per module code, so each cutout draws its real hardware
+// pattern: XLR D-shell (2 diagonal screws), 4-bolt circular flange, powerCON /
+// twistlock (2 screws), D-sub and multipin (2 side screws).
+function kindFor(code) {
+  if (/^UNIV|^COMBO|^XLR/.test(code)) return 'xlr';
+  if (/^4SC|^SPX|^VEAM/.test(code)) return 'circ4';
+  if (/^PCT1|^PC20|^TW/.test(code)) return 'pcon';
+  if (/BNC|CANARE/.test(code)) return 'bnc';
+  if (/DB\d/.test(code)) return 'dsub';
+  if (/ELCO|^1W|^2W|DL96/.test(code)) return 'multi';
+  return 'plain';
+}
+
+// Contact layouts: normalized centers within the cutout + pin diameter in inches
+function pinPlan(kind) {
+  if (kind === 'xlr') return { d: 0.085, pts: [[0.34, 0.4], [0.66, 0.4], [0.5, 0.68]] };
+  if (kind === 'pcon') return { d: 0.1, pts: [[0.34, 0.42], [0.66, 0.42], [0.5, 0.68]] };
+  if (kind === 'bnc') return { d: 0.055, pts: [[0.5, 0.5]] };
+  if (kind === 'circ4') {
+    const pts = [];
+    for (let k = 0; k < 8; k++) {
+      const a = (k / 8) * Math.PI * 2 - Math.PI / 2;
+      pts.push([0.5 + 0.28 * Math.cos(a), 0.5 + 0.28 * Math.sin(a)]);
+    }
+    pts.push([0.5, 0.5]);
+    return { d: 0.065, pts };
+  }
+  if (kind === 'dsub') {
+    const pts = [];
+    for (let k = 0; k < 7; k++) pts.push([0.14 + k * 0.12, 0.36]);
+    for (let k = 0; k < 6; k++) pts.push([0.2 + k * 0.12, 0.64]);
+    return { d: 0.042, pts };
+  }
+  if (kind === 'multi') {
+    const pts = [];
+    for (let r = 0; r < 3; r++) for (let k = 0; k < 9; k++) pts.push([0.1 + k * 0.1, 0.25 + r * 0.25]);
+    return { d: 0.04, pts };
+  }
+  return null;
+}
+
+const SCREW_IN = 0.11;
+function decorate(holes, kind) {
+  const pct = (v) => +((v / FACE) * 100).toFixed(2);
+  const d = pct(SCREW_IN);
+  return holes.map((h) => {
+    const cx = h.left + h.w / 2, cy = h.top + h.h / 2, screws = [];
+    const push = (dx, dy) => screws.push({
+      left: +(cx + dx - d / 2).toFixed(2), top: +(cy + dy - d / 2).toFixed(2), d
+    });
+    if (kind === 'xlr') { const o = h.w * 0.46; push(-o, -o); push(o, o); }
+    else if (kind === 'circ4') { const o = h.w * 0.45; push(-o, -o); push(o, -o); push(-o, o); push(o, o); }
+    else if (kind === 'pcon') { const o = h.w * 0.44; push(-o, o); push(o, -o); }
+    else if (kind === 'dsub' || kind === 'multi') { const o = h.w / 2 + pct(0.085); push(-o, 0); push(o, 0); }
+    const ringed = kind === 'xlr' || kind === 'circ4' || kind === 'pcon' || kind === 'bnc';
+    const plan = pinPlan(kind);
+    const inW = (h.w / 100) * FACE, inH = (h.h / 100) * FACE;
+    const pins = plan ? plan.pts.map(([px, py]) => {
+      const pw = +((plan.d / inW) * 100).toFixed(2), ph = +((plan.d / inH) * 100).toFixed(2);
+      return { left: +(px * 100 - pw / 2).toFixed(2), top: +(py * 100 - ph / 2).toFixed(2), w: pw, h: ph };
+    }) : [];
+    return Object.assign({}, h, {
+      screws,
+      pins,
+      ringColor: ringed ? 'var(--color-neutral-600)' : 'transparent',
+      ringInset: kind === 'circ4' ? '15%' : (kind === 'bnc' ? '26%' : '22%')
+    });
+  });
+}
 
 // [code, name, short, holeFn]
 const CATALOG = [
@@ -302,7 +389,10 @@ const CATALOG = [
     ['2ELCO38', 'Two 38-pin Elco multipin punchouts', '2× Elco 38', () => grid(1, 2, 1.7, 0.85, SQ)],
     ['1W1', 'One Whirlwind multipin punchout', '1× Whirlwind', () => grid(1, 1, 1.8, 1.0, SQ)],
     ['1W2', 'Two Whirlwind multipin punchouts', '2× Whirlwind', () => grid(1, 2, 1.8, 0.9, SQ)],
-    ['2DL96', 'Two Cannon DL series 96-pin multipin punchouts', '2× Cannon DL96', () => grid(1, 2, 2.2, 0.85, SQ)]
+    ['2DL96', 'Two Cannon DL series 96-pin multipin punchouts', '2× Cannon DL96', () => grid(1, 2, 2.2, 0.85, SQ)],
+    ['VEAM8', 'One VEAM 8-pair audio multipin punchout — round flange, centered', '1× VEAM 8-pair', () => grid(1, 1, 1.5, 1.5, '50%')],
+    ['VEAM12', 'One VEAM 12-pair audio multipin punchout — round flange, centered', '1× VEAM 12-pair', () => grid(1, 1, 1.8, 1.8, '50%')],
+    ['VEAM24', 'One VEAM 24-pair audio multipin punchout — round flange, centered', '1× VEAM 24-pair', () => grid(1, 1, 2.15, 2.15, '50%')]
   ]],
   ['Data & serial', [
     ['1DB9', 'One DB9 punchout', '1× DB9', () => grid(1, 1, 1.2, 0.5, SQ)],
@@ -330,7 +420,12 @@ const CATALOG = [
     ['DUP1', 'One duplex AC outlet punchout', '1× duplex outlet', () => grid(1, 1, 1.35, 2.6, SQ)],
     ['DUP2', 'Two duplex AC outlet punchouts', '2× duplex outlet', () => grid(2, 1, 1.3, 2.6, SQ)],
     ['TW2B', 'Two twistlock punchouts — oval pattern, fits most brands', '2× twistlock', () => grid(2, 1, 1.3, 1.3, '50%')],
-    ['TW3B', 'Three twistlock punchouts', '3× twistlock', () => grid(3, 1, 0.95, 0.95, '50%')]
+    ['TW3B', 'Three twistlock punchouts', '3× twistlock', () => grid(3, 1, 0.95, 0.95, '50%')],
+    ['PCT1M', 'One powerCON TRUE1 male (chassis inlet) punchout', '1× TRUE1 male', () => grid(1, 1, 1.05, 1.05, '50%')],
+    ['PCT1F', 'One powerCON TRUE1 female (chassis outlet) punchout', '1× TRUE1 female', () => grid(1, 1, 1.05, 1.05, '50%')],
+    ['PCT1MF', 'One powerCON TRUE1 male and one female punchout', 'TRUE1 M + F', () => grid(2, 1, 1.05, 1.05, '50%')],
+    ['PC20', 'One powerCON 20 A punchout — blue in, grey out', '1× powerCON 20', () => grid(1, 1, 1.0, 1.0, '50%')],
+    ['PC20X2', 'Two powerCON 20 A punchouts', '2× powerCON 20', () => grid(2, 1, 1.0, 1.0, '50%')]
   ]],
   ['Blank & vented', [
     ['UCPB1', 'Single blank module — fills an unused slot', 'Blank', () => []],
@@ -351,7 +446,7 @@ const NO_LABELS = { VT: true, UCPB1: true };
 const BY_CODE = {};
 const ALL = [];
 CATALOG.forEach(([cat, items]) => items.forEach(([code, name, short, fn]) => {
-  const m = { code, name, short, cat, map: PART_NO[code] || code, holes: fn(), labelable: !NO_LABELS[code] };
+  const m = { code, name, short, cat, map: PART_NO[code] || code, holes: decorate(fn(), kindFor(code)), labelable: !NO_LABELS[code] };
   BY_CODE[code] = m;
   ALL.push(m);
 }));
@@ -364,9 +459,51 @@ function dropSlotLabels(labels, i) {
 
 class Component extends DCLogic {
   state = {
-    frames: [{ name: 'Frame 1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], labels: {} }],
-    filter: 'All', picked: null, over: ''
+    frames: [{ name: 'Frame 1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], slotNames: ['', '', '', '', ''], labels: {} }],
+    filter: 'All', picked: null, over: '', saveNote: ''
   };
+
+  componentDidMount() {
+    try {
+      const raw = window.localStorage.getItem('ucp-fk2-project');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data && Array.isArray(data.frames) && data.frames.length) {
+        this.setState({ frames: data.frames, saveNote: 'restored' });
+      }
+    } catch (e) {}
+  }
+
+  componentDidUpdate() {
+    if (this._savedFrames === this.state.frames) return;
+    this._savedFrames = this.state.frames;
+    try {
+      window.localStorage.setItem('ucp-fk2-project', JSON.stringify({ frames: this.state.frames, savedAt: Date.now() }));
+    } catch (e) {}
+  }
+
+  downloadProject() {
+    const blob = new Blob([JSON.stringify({ frames: this.state.frames }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ucp-fk2-project.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+
+  loadProject(file) {
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const data = JSON.parse(r.result);
+        if (data && Array.isArray(data.frames) && data.frames.length) {
+          this.setState({ frames: data.frames, picked: null, over: '', saveNote: 'loaded from file' });
+        }
+      } catch (e) { this.setState({ saveNote: "couldn't read that file" }); }
+    };
+    r.readAsText(file);
+  }
 
   patchFrame(fi, patch) {
     this.setState((s) => ({
@@ -389,7 +526,7 @@ class Component extends DCLogic {
       const slots = f.slots.slice();
       slots[i] = code;
       const frames = s.frames.slice();
-      frames[fi] = { name: f.name, slots, labels: dropSlotLabels(f.labels, i) };
+      frames[fi] = Object.assign({}, f, { slots, labels: dropSlotLabels(f.labels, i) });
       return { frames, over: '', picked: null };
     });
   }
@@ -403,11 +540,12 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const { frames, filter, picked, over } = this.state;
+    const { frames, filter, picked, over, saveNote } = this.state;
     const filled = frames.reduce((n, f) => n + f.slots.filter(Boolean).length, 0);
 
     const holesFor = (labels, code, i) => (code ? BY_CODE[code].holes : []).map((h, j) => ({
       left: h.left, top: h.top, w: h.w, h: h.h, r: h.r,
+      screws: h.screws, ringColor: h.ringColor, ringInset: h.ringInset, pins: h.pins,
       label: (code && BY_CODE[code].labelable && labels[i + ':' + j]) || '',
       labelLeft: +(h.left + h.w / 2 - 14).toFixed(2),
       labelTop: +(h.top + h.h + 1.2).toFixed(2),
@@ -428,13 +566,26 @@ class Component extends DCLogic {
       slots: f.slots.map((code, i) => {
         const m = code ? BY_CODE[code] : null;
         const key = fi + '/' + i;
+        const custom = ((f.slotNames || [])[i] || '').trim();
         return {
-          label: m ? m.code : 'Slot ' + (i + 1),
+          label: custom || (m ? m.code : 'Slot ' + (i + 1)),
+          nameValue: (f.slotNames || [])[i] || '',
+          namePlaceholder: m ? m.code : 'Slot ' + (i + 1),
+          onNameClick: (e) => e.stopPropagation(),
+          onRename: (e) => {
+            const v = e.target.value;
+            this.patchFrame(fi, (fr) => {
+              const slotNames = (fr.slotNames || ['', '', '', '', '']).slice();
+              slotNames[i] = v;
+              return { slotNames };
+            });
+          },
           holes: holesFor(f.labels, code, i),
           title: m ? m.name : 'Empty — drag a module here',
           bg: over === key ? 'var(--color-accent-900)' : 'transparent',
-          frameColor: over === key ? 'var(--color-accent-500)' : (m ? 'var(--color-neutral-800)' : 'var(--color-neutral-700)'),
-          labelColor: m ? 'var(--color-neutral-400)' : 'var(--color-neutral-600)',
+          frameColor: over === key ? 'var(--color-accent-500)' : (m ? 'var(--color-neutral-700)' : 'var(--color-neutral-800)'),
+          frameStyle: over === key || !m ? 'dashed' : 'solid',
+          labelColor: m ? 'var(--color-neutral-300)' : 'var(--color-neutral-600)',
           onDragOver: (e) => { e.preventDefault(); if (this.state.over !== key) this.setState({ over: key }); },
           onDragLeave: () => { if (this.state.over === key) this.setState({ over: '' }); },
           onDrop: (e) => {
@@ -485,8 +636,8 @@ class Component extends DCLogic {
       f.slots.forEach((code, i) => {
         if (!code || !BY_CODE[code].labelable || !BY_CODE[code].holes.length) return;
         rows.push({
+          slotName: ((f.slotNames || [])[i] || '').trim() || 'Slot ' + (i + 1),
           code: BY_CODE[code].code,
-          slotName: 'Slot ' + (i + 1),
           fields: BY_CODE[code].holes.map((h, j) => ({
             value: f.labels[i + ':' + j] || '',
             placeholder: 'Hole ' + (j + 1),
@@ -514,8 +665,11 @@ class Component extends DCLogic {
       catalog: CATALOG.map(([name, items]) => ({ name, items: items.map(([code]) => BY_CODE[code]) })),
       statusText: frames.length + (frames.length === 1 ? ' frame · ' : ' frames · ') + filled + ' of ' + frames.length * 5 + ' slots filled',
       trayHint: picked ? 'Now click a slot to place ' + picked : 'Drag onto a slot, or click a module then a slot',
+      saveText: saveNote ? 'Saved in this browser \u00b7 ' + saveNote : 'Saved in this browser',
+      onDownload: () => this.downloadProject(),
+      onUpload: (e) => { this.loadProject(e.target.files && e.target.files[0]); e.target.value = ''; },
       onAddFrame: () => this.setState((s) => ({
-        frames: s.frames.concat([{ name: 'Frame ' + (s.frames.length + 1), slots: [null, null, null, null, null], labels: {} }])
+        frames: s.frames.concat([{ name: 'Frame ' + (s.frames.length + 1), slots: [null, null, null, null, null], slotNames: ['', '', '', '', ''], labels: {} }])
       }))
     };
   }
