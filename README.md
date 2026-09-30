@@ -24,11 +24,10 @@ read off a parts list you can print straight to PDF.
 | **Move plates** | Drag a placed module onto another slot — in any frame — to move it, or to swap it with the module already there. Its name and engravings go with it. |
 | **Per-hole engraving** | Type a short label for each individual hole in a module. Labels show under the hole on the panel drawing and are collected per-frame in a sidebar. Blanks and vents have nothing to engrave. |
 | **Parts list** | A live bill of materials — the FK2 frame kits plus every module, quantity-rolled across all frames, with published part numbers. With more than one rack, a per-rack breakdown follows the job total. |
-| **Module catalog** | The full reference table, grouped by category. |
 | **Save / open** | Work autosaves to the browser. Use **Save file** / **Open file** to move a project (racks, frames, slots and labels) as JSON. Older files without racks open into a single rack. |
 | **PDF export** | Print with a job name stamped on the sheet. Choose *Panel + parts list* or *Panel only*; UI chrome drops out of the print. |
 
-### Module catalog
+### Modules
 
 59 modules in 8 categories:
 

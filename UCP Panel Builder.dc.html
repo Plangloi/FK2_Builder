@@ -27,6 +27,10 @@
   a { color: var(--color-accent-300); text-decoration: none; }
   .slot-engrave::placeholder { color: var(--color-neutral-400); opacity: 1; letter-spacing: 0.14em; }
   .print-only { display: none; }
+  .tray-resize-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; transform: translateX(-50%); background: var(--color-divider); transition: background 120ms ease, width 120ms ease; }
+  .tray-resize-grip { position: absolute; left: 50%; top: 50%; width: 4px; height: 36px; transform: translate(-50%, -50%); border-radius: 99px; background: var(--color-neutral-700); transition: background 120ms ease; }
+  .tray-resize:hover .tray-resize-line, .tray-resize[data-active="true"] .tray-resize-line { width: 2px; background: var(--color-accent-500); }
+  .tray-resize:hover .tray-resize-grip, .tray-resize[data-active="true"] .tray-resize-grip { background: var(--color-accent-400); }
   input[type="search"]::-webkit-search-cancel-button { display: none; }
   .hole-pick:hover { opacity: 0.12 !important; background: var(--color-accent-500); }
   @media print { .print-only { display: block !important; } }
@@ -44,7 +48,6 @@
     <nav style="display:flex;align-items:center;gap:16.8px;font-size:13px">
       <a href="#builder">Builder</a>
       <a href="#bom">Parts list</a>
-      <a href="#catalog">Module catalog</a>
       <sc-if value="{{ showExport }}" hint-placeholder-val="{{ true }}">
         <button type="button" class="btn btn-primary" onClick="{{ onPrint }}" style="font-family:var(--font-body);font-size:12px;padding:5.6px 14px;border-radius:8px;cursor:pointer;background:transparent;color:var(--color-accent-200);border:1px solid var(--color-accent-600)" style-hover="background:var(--color-accent-900)">Export to PDF</button>
       </sc-if>
@@ -86,7 +89,7 @@
 
     <div style="display:flex;align-items:flex-start;gap:22.4px">
 
-      <aside class="np" style="flex: 0 0 252px; position: sticky; top: 52px; align-self: flex-start; max-height: calc(100vh - 72px); overflow: auto; padding-right: 16.8px; border-right: 1px solid var(--color-divider); box-sizing: border-box">
+      <aside class="np" style="flex: 0 0 {{ trayW }}px; width: {{ trayW }}px; position: sticky; top: 52px; align-self: flex-start; max-height: calc(100vh - 72px); overflow: auto; padding-right: 11.2px; box-sizing: border-box">
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:11.2px;margin-bottom:11.2px">
           <h3 style="font-family:var(--font-heading);font-weight:500;font-size:15px;margin:0">Module tray</h3>
           <span style="font-size:11px;color:var(--color-neutral-500)">{{ trayCount }}</span>
@@ -106,27 +109,38 @@
         <sc-if value="{{ trayEmpty }}" hint-placeholder-val="{{ false }}">
           <p style="margin:0;font-size:12px;line-height:1.4;color:var(--color-neutral-500)">{{ trayEmptyText }}</p>
         </sc-if>
-        <div style="display:grid;gap:5.6px">
+        <div style="display:grid;gap:{{ trayScale.gap }}px">
           <sc-for list="{{ tray }}" as="m" hint-placeholder-count="12">
-            <div draggable="true" onDragStart="{{ m.onDragStart }}" onDragEnd="{{ m.onDragEnd }}" onClick="{{ m.onClick }}" style="display:flex;gap:8.4px;align-items:center;padding:5.6px;border:1px solid {{ m.border }};border-radius:8px;background:{{ m.bg }};cursor:grab;user-select:none" style-hover="border-color:var(--color-accent-600)">
-              <div style="position:relative;flex:0 0 38px;height:38px;border:1px solid var(--color-neutral-700);border-radius:2px;background:var(--color-neutral-900)">
+            <div draggable="true" onDragStart="{{ m.onDragStart }}" onDragEnd="{{ m.onDragEnd }}" onClick="{{ m.onClick }}" style="display:flex;gap:{{ trayScale.gap }}px;align-items:center;padding:{{ trayScale.pad }}px;border:1px solid {{ m.border }};border-radius:8px;background:{{ m.bg }};cursor:grab;user-select:none" style-hover="border-color:var(--color-accent-600)">
+              <div style="position:relative;flex:0 0 {{ trayScale.thumb }}px;height:{{ trayScale.thumb }}px;border:1px solid var(--color-neutral-700);border-radius:{{ trayScale.radius }}px;background:var(--color-neutral-900)">
                 <sc-for list="{{ m.holes }}" as="h" hint-placeholder-count="0">
                   <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid {{ h.trayBd }};border-radius:{{ h.r }}">
                     <div style="position:absolute;inset:{{ h.ringInset }};border:1px solid {{ h.ringColor }};border-radius:{{ h.r }}"></div>
                     <sc-for list="{{ h.faces }}" as="f" hint-placeholder-count="0">
                       <img src="{{ f.src }}" alt="" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;display:block">
                     </sc-for>
+                    <sc-for list="{{ h.pins }}" as="p" hint-placeholder-count="0">
+                      <div style="position:absolute;left:{{ p.left }}%;top:{{ p.top }}%;width:{{ p.w }}%;height:{{ p.h }}%;background:var(--color-neutral-400);border-radius:50%;opacity:{{ trayScale.detail }}"></div>
+                    </sc-for>
                   </div>
+                  <sc-for list="{{ h.screws }}" as="sc" hint-placeholder-count="0">
+                    <div style="position:absolute;left:{{ sc.left }}%;top:{{ sc.top }}%;width:{{ sc.d }}%;height:{{ sc.d }}%;border:1px solid var(--color-neutral-500);border-radius:50%;box-sizing:border-box;opacity:{{ trayScale.detail }}"></div>
+                  </sc-for>
                 </sc-for>
               </div>
               <div style="min-width:0">
-                <div style="font-size:12px;font-weight:500;letter-spacing:0.01em">{{ m.code }}</div>
-                <div style="font-size:10px;color:var(--color-neutral-500);line-height:1.35;text-wrap:pretty">{{ m.short }}</div>
+                <div style="font-size:{{ trayScale.code }}px;font-weight:500;letter-spacing:0.01em">{{ m.code }}</div>
+                <div style="font-size:{{ trayScale.short }}px;color:var(--color-neutral-500);line-height:1.35;text-wrap:pretty">{{ m.short }}</div>
               </div>
             </div>
           </sc-for>
         </div>
       </aside>
+
+      <div class="np tray-resize" onMouseDown="{{ onTrayResize }}" onDoubleClick="{{ onTrayReset }}" onKeyDown="{{ onTrayKey }}" tabIndex="0" aria-label="Resize module tray" aria-valuenow="{{ trayW }}" aria-valuemin="200" aria-valuemax="640" title="Drag (or ← →) to resize the module tray · double-click to reset" role="separator" aria-orientation="vertical" data-active="{{ trayResizing }}" style="flex:0 0 12px;margin:0 -17px;align-self:flex-start;position:sticky;top:52px;height:calc(100vh - 72px);cursor:col-resize;z-index:2">
+        <div class="tray-resize-line"></div>
+        <div class="tray-resize-grip"></div>
+      </div>
 
       <div style="flex:1 1 0;min-width:0">
     <div style="display:grid;gap:33.6px">
@@ -279,7 +293,7 @@
 
   
 
-  <section id="bom" class="print-bom print-sheet" style="padding:56px 32px 0;max-width:1240px">
+  <section id="bom" class="print-bom print-sheet" style="padding:56px 32px 56px;max-width:1240px">
     <h2 style="font-family:var(--font-heading);font-weight:500;font-size:26px;margin:0 0 16.8px">Parts list</h2>
     <table class="table" style="width:100%;border-collapse:collapse;font-size:13px">
       <thead>
@@ -324,29 +338,6 @@
     <p style="font-size:11px;color:var(--color-neutral-600);margin-top:11.2px;max-width:70ch">Mounting hardware for the five modules ships with the FK2 frame kit. Empty slots should be filled with a blank or vented module.</p>
   </section>
 
-  <section id="catalog" class="np" style="padding:56px 32px 78px;max-width:1240px">
-    <h2 style="font-family:var(--font-heading);font-weight:500;font-size:26px;margin:0 0 5.6px">Module catalog</h2>
-    <p style="margin:0 0 22.4px;font-size:14px;color:var(--color-neutral-500);max-width:60ch">Every module occupies one of the five slots. Punchouts are prepunched; no drilling required.</p>
-    <sc-for list="{{ catalog }}" as="g" hint-placeholder-count="4">
-      <div style="margin-bottom:33.6px">
-        <div style="display:flex;align-items:center;gap:11.2px;margin-bottom:11.2px">
-          <h4 style="font-family:var(--font-heading);font-weight:500;font-size:14px;margin:0;letter-spacing:0.02em">{{ g.name }}</h4>
-          <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--color-divider),transparent)"></div>
-        </div>
-        <table class="table" style="width:100%;border-collapse:collapse;font-size:13px">
-          <tbody>
-            <sc-for list="{{ g.items }}" as="m" hint-placeholder-count="3">
-              <tr>
-                <td style="padding:6px 11.2px;width:150px;font-variant-numeric:tabular-nums">{{ m.map }}</td>
-                <td style="padding:6px 11.2px;width:110px;color:var(--color-neutral-500)">{{ m.code }}</td>
-                <td style="padding:6px 11.2px;color:var(--color-neutral-300)">{{ m.name }}</td>
-              </tr>
-            </sc-for>
-          </tbody>
-        </table>
-      </div>
-    </sc-for>
-  </section>
 
   <footer class="np" style="padding:22.4px 32px;border-top:1px solid var(--color-divider);font-size:11px;color:var(--color-neutral-600)">
     Reference layout tool. Confirm connector fit and part numbers against the current Middle Atlantic UCP documentation before ordering.
@@ -858,15 +849,23 @@ function normalizeProject(data) {
   return { racks, frames };
 }
 
+// Module tray width (px): drag the handle to resize; remembered per browser.
+const TRAY_W = 252, TRAY_MIN = 200, TRAY_MAX = 640, TRAY_KEY = 'ucp-fk2-tray-w';
+const clampTray = (w) => Math.round(Math.min(TRAY_MAX, Math.max(TRAY_MIN, w)));
+
 class Component extends DCLogic {
   state = {
     racks: [{ id: 'r1', name: 'Rack A' }],
     frames: [{ name: 'Frame 1', rack: 'r1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], slotNames: ['', '', '', '', ''], labels: {},
       inserts: { '0:0': 'xlr3f', '0:1': 'xlr3f', '0:2': 'xlr3f', '0:3': 'xlr3f', '1:0': 'ethercon', '1:1': 'ethercon', '1:2': 'dmx5f', '1:3': 'hdmi' } }],
-    filter: 'All', query: '', picked: null, over: '', saveNote: ''
+    filter: 'All', query: '', picked: null, over: '', saveNote: '', trayW: TRAY_W, trayResizing: false
   };
 
   componentDidMount() {
+    try {
+      const w = +window.localStorage.getItem(TRAY_KEY);
+      if (w) this.setState({ trayW: clampTray(w) });
+    } catch (e) {}
     try {
       const raw = window.localStorage.getItem('ucp-fk2-project');
       if (!raw) return;
@@ -904,6 +903,30 @@ class Component extends DCLogic {
       } catch (e) { this.setState({ saveNote: "couldn't read that file" }); }
     };
     r.readAsText(file);
+  }
+
+  startTrayResize(e) {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    const x0 = e.clientX, w0 = this.state.trayW;
+    const move = (ev) => this.setState({ trayW: clampTray(w0 + ev.clientX - x0) });
+    const up = () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', up);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      this.setState({ trayResizing: false });
+      this.saveTrayW();
+    };
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    this.setState({ trayResizing: true });
+  }
+
+  saveTrayW() {
+    try { window.localStorage.setItem(TRAY_KEY, String(this.state.trayW)); } catch (e) {}
   }
 
   patchFrame(fi, patch) {
@@ -1209,8 +1232,29 @@ class Component extends DCLogic {
       cats,
       tray,
       bom,
-      catalog: CATALOG.map(([name, items]) => ({ name, items: items.map(([code]) => BY_CODE[code]) })),
       statusText: racks.length + (racks.length === 1 ? ' rack · ' : ' racks · ') + frames.length + (frames.length === 1 ? ' frame · ' : ' frames · ') + filled + ' of ' + frames.length * 5 + ' slots filled',
+      trayW: this.state.trayW,
+      // Tray cards scale with the tray: thumbnail 1:1 with the width, text more gently.
+      trayScale: (() => {
+        const k = this.state.trayW / TRAY_W, t = 1 + (k - 1) * 0.55;
+        return {
+          thumb: Math.round(38 * k), radius: +(2 * k).toFixed(1),
+          pad: +(5.6 * Math.min(k, 1.8)).toFixed(1), gap: +(5.6 + 2.8 * (k - 1)).toFixed(1),
+          code: +(12 * t).toFixed(1), short: +(10 * t).toFixed(1),
+          // pins and screws only once the thumbnail is big enough to show them
+          detail: Math.max(0, Math.min(1, (k - 1.15) / 0.5)).toFixed(2)
+        };
+      })(),
+      trayResizing: this.state.trayResizing ? 'true' : 'false',
+      onTrayResize: (e) => this.startTrayResize(e),
+      onTrayKey: (e) => {
+        const step = e.key === 'ArrowLeft' ? -16 : e.key === 'ArrowRight' ? 16 : 0;
+        if (!step) return;
+        e.preventDefault();
+        this.setState({ trayW: clampTray(this.state.trayW + step) });
+        try { window.localStorage.setItem(TRAY_KEY, String(clampTray(this.state.trayW + step))); } catch (err) {}
+      },
+      onTrayReset: () => { this.setState({ trayW: TRAY_W }); try { window.localStorage.removeItem(TRAY_KEY); } catch (e) {} },
       query: query || '',
       hasQuery: !!query,
       onQuery: (e) => this.setState({ query: e.target.value, filter: 'All' }),
