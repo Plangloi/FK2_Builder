@@ -18,7 +18,7 @@ read off a parts list you can print straight to PDF.
 | | |
 | --- | --- |
 | **Frame layout** | A schematic front elevation of the FK2 at a true 19" × 3-1/2" aspect, with the five slots drawn to scale. Punchouts render at their real proportions from each module's hole pattern. |
-| **Module tray** | All 56 modules, filterable by category. Drag onto a slot, or click a module and then click a slot. |
+| **Module tray** | All 59 modules, searchable (code, name, connector type — e.g. "powercon", "etherCON", "snake") and filterable by category. Drag onto a slot, or click a module and then click a slot. |
 | **Multiple frames** | Add as many FK2 frames as the job needs; each gets its own name, slots and labels. |
 | **Racks** | Group frames into named racks, each with as many FK2 frames as it needs. Move a frame to another rack from its header; remove a rack together with its frames. |
 | **Move plates** | Drag a placed module onto another slot — in any frame — to move it, or to swap it with the module already there. Its name and engravings go with it. |
@@ -30,15 +30,18 @@ read off a parts list you can print straight to PDF.
 
 ### Module catalog
 
-56 modules in 8 categories:
+59 modules in 8 categories:
 
-- **XLR & Neutrik** — universal XLR female (`UNIV1`–`UNIV6`), XLR male in
-- **Combo & circular** — Combo, 4-bolt circular flange, Socapex 19
-- **BNC & video** — 1/2" BNC groups, Canare
-- **Multipin** — Elco 38/56/90, Whirlwind, Cannon DL96
-- **Data & serial** — DB9, DB15 / HD15, DB25, DB37
-- **Jacks & drilled holes** — 1/4", 3/8", 7/16" holes and dual banana
-- **Power** — duplex AC outlets, twistlock, powerCON TRUE1, powerCON 20
+- **D-size (pick inserts)** — universal D-size plates (`UNIV1`–`UNIV6`): click a hole (or use
+  the sidebar) to pick its insert — XLR3 M/F, DMX XLR5, combo, 1/4", RCA, Toslink, speakON,
+  etherCON / Cat6A, opticalCON DUO / QUAD, SDI / 12G-SDI BNC, HDMI, USB A/B, USB-C, blank.
+  Each insert is listed in the parts list.
+- **Audio & speaker** — XLR male in, combo XLR / 1/4", 4-bolt circular (speakON, Cannon EP), dual banana
+- **Video** — 1/2" BNC groups, Canare, HDMI feedthroughs (1, 2, 4)
+- **Data** — DB9, DB15 / HD15, DB25, DB37
+- **Multipin & snake** — VEAM 8/12/24-pair, Elco 38/56/90, Whirlwind, Cannon DL96
+- **Power** — powerCON 20, powerCON TRUE1, twistlock, duplex AC outlets, Socapex 19
+- **Drilled holes** — 1/4", 3/8", 7/16" holes
 - **Blank & vented** — `UCPB1` blank, `VT` vented blank
 
 Part numbers follow Middle Atlantic's own inconsistency: the `UCP-` prefix appears on

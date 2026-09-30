@@ -27,6 +27,8 @@
   a { color: var(--color-accent-300); text-decoration: none; }
   .slot-engrave::placeholder { color: var(--color-neutral-400); opacity: 1; letter-spacing: 0.14em; }
   .print-only { display: none; }
+  input[type="search"]::-webkit-search-cancel-button { display: none; }
+  .hole-pick:hover { opacity: 0.12 !important; background: var(--color-accent-500); }
   @media print { .print-only { display: block !important; } }
   a:hover { color: var(--color-accent-200); }
   *:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
@@ -49,7 +51,7 @@
     </nav>
   </header>
 
-  <section class="np" style="padding:39px 32px 22.4px;max-width:1460px;display:flex;align-items:flex-end;justify-content:space-between;gap:33.6px;flex-wrap:wrap">
+  <section class="np" style="padding:39px 32px 22.4px;display:flex;align-items:flex-end;justify-content:space-between;gap:33.6px;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:22.4px">
       
       <div>
@@ -65,7 +67,7 @@
     </div>
   </section>
 
-  <section id="builder" class="print-sheet" style="padding:33.6px 32px 0;max-width:1460px">
+  <section id="builder" class="print-sheet" style="padding:33.6px 32px 0">
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:22.4px;flex-wrap:wrap;margin-bottom:22.4px">
       <div>
         <h2 style="font-family:var(--font-heading);font-weight:500;font-size:26px;margin:0">Frame layout</h2>
@@ -84,9 +86,16 @@
 
     <div style="display:flex;align-items:flex-start;gap:22.4px">
 
-      <aside class="np" style="flex: 0 0 252px; position: sticky; top: 52px; align-self: flex-start; max-height: calc(100vh - 72px); overflow: auto; padding-right: 16.8px; border-right: 1px solid var(--color-divider); width: 258px; height: 898px">
+      <aside class="np" style="flex: 0 0 252px; position: sticky; top: 52px; align-self: flex-start; max-height: calc(100vh - 72px); overflow: auto; padding-right: 16.8px; border-right: 1px solid var(--color-divider); box-sizing: border-box">
         <div style="display:flex;align-items:baseline;justify-content:space-between;gap:11.2px;margin-bottom:11.2px">
           <h3 style="font-family:var(--font-heading);font-weight:500;font-size:15px;margin:0">Module tray</h3>
+          <span style="font-size:11px;color:var(--color-neutral-500)">{{ trayCount }}</span>
+        </div>
+        <div style="position:relative;margin-bottom:8.4px">
+          <input type="search" value="{{ query }}" onChange="{{ onQuery }}" onKeyDown="{{ onQueryKey }}" placeholder="Search — powercon, etherCON, DB9, snake…" aria-label="Search modules" style="width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:12px;padding:6px 26px 6px 9px;background:var(--color-bg);color:var(--color-text);border:1px solid var(--color-neutral-700);border-radius:8px" style-focus="border-color:var(--color-accent-600);outline:none">
+          <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
+            <button type="button" onClick="{{ onClearQuery }}" title="Clear search" aria-label="Clear search" style="position:absolute;right:4px;top:50%;transform:translateY(-50%);width:20px;height:20px;padding:0;border:0;border-radius:99px;background:transparent;color:var(--color-neutral-400);cursor:pointer;font-size:14px;line-height:20px">×</button>
+          </sc-if>
         </div>
         <p style="margin:0 0 11.2px;font-size:11px;line-height:1.4;color:var(--color-neutral-500)">{{ trayHint }}</p>
         <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:11.2px">
@@ -94,13 +103,19 @@
             <button type="button" onClick="{{ c.onClick }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:99px;cursor:pointer;background:{{ c.bg }};color:{{ c.fg }};border:1px solid {{ c.border }}">{{ c.name }}</button>
           </sc-for>
         </div>
+        <sc-if value="{{ trayEmpty }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;font-size:12px;line-height:1.4;color:var(--color-neutral-500)">{{ trayEmptyText }}</p>
+        </sc-if>
         <div style="display:grid;gap:5.6px">
           <sc-for list="{{ tray }}" as="m" hint-placeholder-count="12">
             <div draggable="true" onDragStart="{{ m.onDragStart }}" onDragEnd="{{ m.onDragEnd }}" onClick="{{ m.onClick }}" style="display:flex;gap:8.4px;align-items:center;padding:5.6px;border:1px solid {{ m.border }};border-radius:8px;background:{{ m.bg }};cursor:grab;user-select:none" style-hover="border-color:var(--color-accent-600)">
               <div style="position:relative;flex:0 0 38px;height:38px;border:1px solid var(--color-neutral-700);border-radius:2px;background:var(--color-neutral-900)">
                 <sc-for list="{{ m.holes }}" as="h" hint-placeholder-count="0">
-                  <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-400);border-radius:{{ h.r }}">
+                  <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid {{ h.trayBd }};border-radius:{{ h.r }}">
                     <div style="position:absolute;inset:{{ h.ringInset }};border:1px solid {{ h.ringColor }};border-radius:{{ h.r }}"></div>
+                    <sc-for list="{{ h.faces }}" as="f" hint-placeholder-count="0">
+                      <img src="{{ f.src }}" alt="" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;display:block">
+                    </sc-for>
                   </div>
                 </sc-for>
               </div>
@@ -113,7 +128,7 @@
         </div>
       </aside>
 
-      <div style="flex:1 1 640px;min-width:0">
+      <div style="flex:1 1 0;min-width:0">
     <div style="display:grid;gap:33.6px">
     <sc-for list="{{ racks }}" as="rack" hint-placeholder-count="1">
     <div style="display:grid;gap:16.8px;padding:16.8px 22.4px 22.4px;border:1px solid {{ rack.edge }};border-left:5px solid {{ rack.color }};border-radius:18px;background:{{ rack.tint }};box-shadow:var(--shadow-md);break-inside:avoid">
@@ -151,7 +166,7 @@
         </div>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:22.4px;align-items:flex-start">
-      <div style="flex:1 1 620px;min-width:0">
+      <div style="flex:1 1 560px;min-width:0">
       <div class="np" style="display:flex;width:100%;margin-bottom:8.4px">
         <div style="flex:0 0 6.58%"></div>
         <div style="flex:1 1 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:5.6px">
@@ -174,10 +189,24 @@
               <div draggable="{{ slot.filled }}" onDragStart="{{ slot.onDragStart }}" onDragEnd="{{ slot.onDragEnd }}" style="position:absolute;inset:5% 4%;cursor:{{ slot.faceCursor }};border:1px {{ slot.frameStyle }} {{ slot.frameColor }};border-radius:3px;box-shadow:inset 0 1px 0 rgba(233,233,237,0.05)"></div>
               <sc-for list="{{ slot.holes }}" as="h" hint-placeholder-count="0">
                 <div style="position:absolute;inset:0;pointer-events:none">
-                  <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-300);border-radius:{{ h.r }};background:rgba(0,0,0,0.55);box-shadow:inset 0 1px 2px rgba(0,0,0,0.7),0 1px 0 rgba(233,233,237,0.05)">
+                  <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid {{ h.bd }};border-radius:{{ h.r }};background:{{ h.bg }};box-shadow:{{ h.sh }}">
                     <div style="position:absolute;inset:{{ h.ringInset }};border:1px solid {{ h.ringColor }};border-radius:{{ h.r }}"></div>
+                    <sc-for list="{{ h.faces }}" as="f" hint-placeholder-count="0">
+                      <img src="{{ f.src }}" alt="" draggable="false" style="position:absolute;inset:0;width:100%;height:100%;display:block">
+                    </sc-for>
                     <sc-for list="{{ h.pins }}" as="p" hint-placeholder-count="0">
                       <div style="position:absolute;left:{{ p.left }}%;top:{{ p.top }}%;width:{{ p.w }}%;height:{{ p.h }}%;background:var(--color-neutral-400);border-radius:50%"></div>
+                    </sc-for>
+                    <sc-for list="{{ h.pickers }}" as="pk" hint-placeholder-count="0">
+                      <select class="np hole-pick" value="{{ pk.value }}" onChange="{{ pk.onChange }}" onClick="{{ pk.stop }}" onMouseDown="{{ pk.stop }}" title="{{ pk.title }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;pointer-events:auto;font-size:13px">
+                        <sc-for list="{{ pk.groups }}" as="g" hint-placeholder-count="0">
+                          <optgroup label="{{ g.label }}">
+                            <sc-for list="{{ g.options }}" as="o" hint-placeholder-count="0">
+                              <option value="{{ o.id }}">{{ o.label }}</option>
+                            </sc-for>
+                          </optgroup>
+                        </sc-for>
+                      </select>
                     </sc-for>
                   </div>
                   <sc-for list="{{ h.screws }}" as="s" hint-placeholder-count="0">
@@ -203,7 +232,7 @@
         <span>Front elevation · schematic, not to scale for connector fit</span>
         <span>19" × 3-1/2"</span>
       </div>
-      </div><aside class="np" style="flex:1 1 210px;border-left:1px solid var(--color-divider);padding-left:16.8px">
+      </div><aside class="np" style="flex:0 1 290px;min-width:260px;border-left:1px solid var(--color-divider);padding-left:16.8px">
         <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-500);margin-bottom:11.2px">Engraving labels</div>
         <div style="display:grid;gap:11.2px">
           <sc-for list="{{ frame.labelRows }}" as="row" hint-placeholder-count="2">
@@ -214,7 +243,20 @@
               </div>
               <div style="display:flex;flex-wrap:wrap;gap:4px">
                 <sc-for list="{{ row.fields }}" as="f" hint-placeholder-count="2">
-                  <input class="input np" type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" maxLength="10" style="width:70px;font-family:var(--font-body);font-size:11px;padding:4px 5.6px;background:var(--color-bg);color:var(--color-text);border:1px solid var(--color-neutral-800);border-radius:4px">
+                  <div style="display:flex;flex-direction:column;gap:3px">
+                    <sc-if value="{{ f.hasInsert }}" hint-placeholder-val="{{ false }}">
+                      <select class="np" value="{{ f.insert }}" onChange="{{ f.onInsert }}" title="D-size insert for {{ f.placeholder }}" style="width:124px;font-family:var(--font-body);font-size:11px;padding:3px 4px;background:var(--color-bg);color:var(--color-text);border:1px solid var(--color-neutral-700);border-radius:4px">
+                        <sc-for list="{{ f.insertGroups }}" as="g" hint-placeholder-count="2">
+                          <optgroup label="{{ g.label }}">
+                            <sc-for list="{{ g.options }}" as="o" hint-placeholder-count="3">
+                              <option value="{{ o.id }}">{{ o.label }}</option>
+                            </sc-for>
+                          </optgroup>
+                        </sc-for>
+                      </select>
+                    </sc-if>
+                    <input class="input np" type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" maxLength="10" style="width:{{ f.inputW }};box-sizing:border-box;font-family:var(--font-body);font-size:11px;padding:4px 5.6px;background:var(--color-bg);color:var(--color-text);border:1px solid var(--color-neutral-800);border-radius:4px">
+                  </div>
                 </sc-for>
               </div>
             </div>
@@ -333,12 +375,17 @@ function grid(cols, rows, w, h, r) {
 const R = (n) => '50%', SQ = '1px';
 
 // Punchout family per module code, so each cutout draws its real hardware
-// pattern: XLR D-shell (2 diagonal screws), 4-bolt circular flange, powerCON /
-// twistlock (2 screws), D-sub and multipin (2 side screws).
+// pattern: XLR D-shell (2 diagonal screws), D-sub and multipin (2 side screws).
+// Power, speakON and circular multipin draw a full front view (see FACE_KINDS).
 function kindFor(code) {
-  if (/^UNIV|^COMBO|^XLR/.test(code)) return 'xlr';
-  if (/^4SC|^SPX|^VEAM/.test(code)) return 'circ4';
-  if (/^PCT1|^PC20|^TW/.test(code)) return 'pcon';
+  if (/^UNIV/.test(code)) return 'dsize';
+  if (/^COMBO|^XLR/.test(code)) return 'xlr';
+  if (/^HDMI/.test(code)) return 'hdmi';
+  if (/^VEAM|^SPX/.test(code)) return 'veam';
+  if (/^4SC/.test(code)) return 'speakon';
+  if (/^PCT1/.test(code)) return 'true1';
+  if (/^PC20/.test(code)) return 'pcon';
+  if (/^TW/.test(code)) return 'twist';
   if (/BNC|CANARE/.test(code)) return 'bnc';
   if (/DB\d/.test(code)) return 'dsub';
   if (/ELCO|^1W|^2W|DL96/.test(code)) return 'multi';
@@ -348,17 +395,7 @@ function kindFor(code) {
 // Contact layouts: normalized centers within the cutout + pin diameter in inches
 function pinPlan(kind) {
   if (kind === 'xlr') return { d: 0.085, pts: [[0.34, 0.4], [0.66, 0.4], [0.5, 0.68]] };
-  if (kind === 'pcon') return { d: 0.1, pts: [[0.34, 0.42], [0.66, 0.42], [0.5, 0.68]] };
   if (kind === 'bnc') return { d: 0.055, pts: [[0.5, 0.5]] };
-  if (kind === 'circ4') {
-    const pts = [];
-    for (let k = 0; k < 8; k++) {
-      const a = (k / 8) * Math.PI * 2 - Math.PI / 2;
-      pts.push([0.5 + 0.28 * Math.cos(a), 0.5 + 0.28 * Math.sin(a)]);
-    }
-    pts.push([0.5, 0.5]);
-    return { d: 0.065, pts };
-  }
   if (kind === 'dsub') {
     const pts = [];
     for (let k = 0; k < 7; k++) pts.push([0.14 + k * 0.12, 0.36]);
@@ -373,20 +410,283 @@ function pinPlan(kind) {
   return null;
 }
 
+// Power connectors draw as a full front view (flange, housing, contacts) rather
+// than a schematic ring. Per-hole sex: 'in' = male inlet, 'out' = female outlet.
+const SEXES = { PCT1M: ['in'], PCT1F: ['out'], PCT1MF: ['in', 'out'], PC20: ['in'], PC20X2: ['in', 'out'] };
+const FACE_KINDS = { pcon: true, true1: true, twist: true, veam: true, speakon: true, hdmi: true, dsize: true };
+const svgUri = (w, h, body) => 'data:image/svg+xml,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">${body}</svg>`);
+const screwSvg = (x, y, r = 1.45) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="#0b0b0d" stroke="#7b7f88" stroke-width=".4"/>` +
+  `<path d="M${x - r * 0.55} ${y}h${r * 1.1}M${x} ${y - r * 0.55}v${r * 1.1}" stroke="#7b7f88" stroke-width=".35"/>`;
+const radial = (n, r, a0, fn) => Array.from({ length: n }, (_, k) => {
+  const a = a0 + (k * 360) / n, t = (a * Math.PI) / 180;
+  return fn(13 + r * Math.cos(t), 15.5 + r * Math.sin(t), a);
+}).join('');
+
+// Neutrik powerCON / TRUE1 on a D-size flange (26 × 31 mm, screws on the diagonal).
+function powerconFace(kind, sex) {
+  const male = sex !== 'out';
+  const [housing, insert, edge] = kind === 'true1'
+    ? ['#222328', '#16171a', '#55585f']
+    : male ? ['#2463c4', '#184b99', '#123a78'] : ['#b3b7be', '#868b93', '#6a6e75'];
+  const blade = '#d9dce1';
+  const contacts = male
+    // inlet: three flat blades standing on the centre post
+    ? radial(3, 3.1, 90, (x, y, a) =>
+        `<rect x="${x - 0.55}" y="${y - 1.5}" width="1.1" height="3" rx=".3" fill="${blade}" transform="rotate(${a + 90} ${x} ${y})"/>`) +
+      `<circle cx="13" cy="15.5" r="1" fill="#0b0b0d"/>`
+    // outlet: three shuttered socket slots with a contact spring inside
+    : radial(3, 3.7, 90, (x, y, a) =>
+        `<g transform="rotate(${a + 90} ${x} ${y})"><rect x="${x - 0.9}" y="${y - 1.9}" width="1.8" height="3.8" rx=".5" fill="#060607"/>` +
+        `<rect x="${x - 0.2}" y="${y - 1.4}" width=".4" height="2.8" fill="#9ea2a9"/></g>`);
+  const latch = kind === 'true1'
+    ? `<rect x="10.2" y="1.6" width="5.6" height="2.4" rx=".8" fill="#2c2d33" stroke="#6a6d75" stroke-width=".35"/><path d="M11.6 2.8h2.8" stroke="#8a8d95" stroke-width=".35"/>`
+    : '';
+  return svgUri(26, 31,
+    `<rect x=".4" y=".4" width="25.2" height="30.2" rx="2.2" fill="#18191d" stroke="#4a4d55" stroke-width=".5"/>` +
+    screwSvg(3.3, 3.3) + screwSvg(22.7, 27.7) + latch +
+    `<circle cx="13" cy="15.5" r="11.3" fill="${housing}" stroke="${edge}" stroke-width=".6"/>` +
+    `<circle cx="13" cy="15.5" r="10" fill="none" stroke="rgba(0,0,0,.3)" stroke-width=".5"/>` +
+    // locking/alignment mark and the keying notch at 12 o'clock
+    `<path d="M13 4.6l-.9 1.1h1.8z" fill="${kind === 'true1' ? '#e8c547' : '#f1f2f4'}"/>` +
+    `<circle cx="13" cy="15.5" r="8.4" fill="#060607"/>` +
+    `<rect x="11.9" y="6.4" width="2.2" height="1.6" fill="#060607"/>` +
+    `<circle cx="13" cy="15.5" r="${male ? 5.4 : 6.6}" fill="${insert}" stroke="rgba(255,255,255,.08)" stroke-width=".3"/>` +
+    contacts);
+}
+
+// NEMA twistlock (L5 / L14 style): three curved blade slots in a round nylon face.
+function twistFace() {
+  const arc = (a, span, r) => {
+    const t0 = ((a - span / 2) * Math.PI) / 180, t1 = ((a + span / 2) * Math.PI) / 180;
+    const p = (t) => `${(13 + r * Math.cos(t)).toFixed(2)} ${(13 + r * Math.sin(t)).toFixed(2)}`;
+    return `<path d="M${p(t0)}A${r} ${r} 0 0 1 ${p(t1)}" fill="none" stroke="#060607" stroke-width="1.5" stroke-linecap="round"/>`;
+  };
+  return svgUri(26, 26,
+    `<circle cx="13" cy="13" r="12.6" fill="#18191d" stroke="#4a4d55" stroke-width=".5"/>` +
+    screwSvg(4.2, 21.8) + screwSvg(21.8, 4.2) +
+    `<circle cx="13" cy="13" r="9.8" fill="#26272c" stroke="#55585f" stroke-width=".5"/>` +
+    arc(-90, 42, 6) + arc(30, 42, 6) + arc(150, 32, 6) +
+    `<path d="M${13 + 6 * Math.cos(Math.PI * 5 / 6 + 0.28)} ${13 + 6 * Math.sin(Math.PI * 5 / 6 + 0.28)}l-1.4 .9" stroke="#060607" stroke-width="1.5" stroke-linecap="round"/>` +
+    `<circle cx="13" cy="13" r="1.1" fill="#3a3c43"/>`);
+}
+
+// Threaded circular multipin receptacle (VEAM CIR audio, Socapex 19): square
+// 4-screw flange, nickel shell with the master keyway at 12 o'clock, and a
+// concentric pin insert. Rings of 1 + 6 + 12 + … contacts: VEAM 8-pair → 19,
+// 12-pair → 37, 24-pair → 61; Socapex → 19 heavier power contacts.
+const VEAM_RINGS = { VEAM8: 3, VEAM12: 4, VEAM24: 5, 'SPX-19': 3 };
+function veamFace(code) {
+  const spx = code === 'SPX-19';
+  const rings = VEAM_RINGS[code] || 3, step = (spx ? 8.2 : 8.8) / (rings - 1);
+  const pr = spx ? step * 0.36 : Math.min(0.95, step * 0.3);
+  let pins = '';
+  for (let r = 0; r < rings; r++) {
+    const n = r === 0 ? 1 : 6 * r;
+    for (let k = 0; k < n; k++) {
+      const t = (k / n) * Math.PI * 2 - Math.PI / 2;
+      const x = 20 + r * step * Math.cos(t), y = 20 + r * step * Math.sin(t);
+      pins += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${pr.toFixed(2)}" fill="#cfd2d7"/>`;
+    }
+  }
+  const threads = [15.1, 14.5, 13.9, 13.3].map((r) =>
+    `<circle cx="20" cy="20" r="${r}" fill="none" stroke="rgba(0,0,0,.28)" stroke-width=".25"/>`).join('');
+  return svgUri(40, 40,
+    `<rect x=".5" y=".5" width="39" height="39" rx="3" fill="#18191d" stroke="#4a4d55" stroke-width=".5"/>` +
+    screwSvg(4.4, 4.4, 1.8) + screwSvg(35.6, 4.4, 1.8) + screwSvg(4.4, 35.6, 1.8) + screwSvg(35.6, 35.6, 1.8) +
+    `<circle cx="20" cy="20" r="15.8" fill="#8f939a" stroke="#5d6168" stroke-width=".5"/>` + threads +
+    `<circle cx="20" cy="20" r="12.7" fill="#0a0a0c"/>` +
+    `<rect x="18.8" y="6.3" width="2.4" height="1.8" fill="#0a0a0c"/>` +
+    `<circle cx="20" cy="20" r="11.9" fill="#1d1e22" stroke="rgba(255,255,255,.07)" stroke-width=".3"/>` +
+    pins);
+}
+
+// Neutrik speakON NL4MPR / NL8MPR on the 4-bolt flange: black housing, keyed
+// round opening with the centre post and the contact springs around it.
+function speakonFace() {
+  const at = (r, a) => {
+    const t = (a * Math.PI) / 180;
+    return [20 + r * Math.cos(t), 20 + r * Math.sin(t)];
+  };
+  const keys = [-90, 30, 150].map((a) => {
+    const [x, y] = at(11.6, a);
+    return `<rect x="${(x - 1.4).toFixed(2)}" y="${(y - 1.1).toFixed(2)}" width="2.8" height="2.2" fill="#060607" transform="rotate(${a + 90} ${x.toFixed(2)} ${y.toFixed(2)})"/>`;
+  }).join('');
+  const springs = [-45, 45, 135, 225].map((a) => {
+    const [x, y] = at(7.6, a);
+    return `<rect x="${(x - 1.6).toFixed(2)}" y="${(y - 0.45).toFixed(2)}" width="3.2" height=".9" rx=".3" fill="#cfd2d7" transform="rotate(${a + 90} ${x.toFixed(2)} ${y.toFixed(2)})"/>`;
+  }).join('');
+  return svgUri(40, 40,
+    `<rect x=".5" y=".5" width="39" height="39" rx="3" fill="#18191d" stroke="#4a4d55" stroke-width=".5"/>` +
+    screwSvg(4.4, 4.4, 1.8) + screwSvg(35.6, 4.4, 1.8) + screwSvg(4.4, 35.6, 1.8) + screwSvg(35.6, 35.6, 1.8) +
+    `<circle cx="20" cy="20" r="15.6" fill="#222328" stroke="#55585f" stroke-width=".6"/>` +
+    `<circle cx="20" cy="20" r="14" fill="none" stroke="rgba(0,0,0,.35)" stroke-width=".6"/>` +
+    `<path d="M20 5.4l-1 1.2h2z" fill="#f1f2f4"/>` +
+    `<circle cx="20" cy="20" r="11.6" fill="#060607"/>` + keys + springs +
+    `<circle cx="20" cy="20" r="5" fill="#2a2b30" stroke="rgba(255,255,255,.08)" stroke-width=".3"/>` +
+    `<circle cx="20" cy="20" r="2.2" fill="#060607"/>`);
+}
+
+// D-size inserts: everything Neutrik builds on the XLR-style D flange
+// (26 × 31 mm, screws on the diagonal). UNIV plates pick one per hole;
+// HDMI modules always draw the 'hdmi' insert.
+// [id, menu label, reference part #, parts-list description, menu group, part # unconfirmed]
+const INSERTS = [
+  ['xlr3f', 'XLR3 female', 'NC3FD-L-1', 'Neutrik XLR 3-pin female D-size receptacle', 'Audio'],
+  ['xlr3m', 'XLR3 male', 'NC3MD-L-1', 'Neutrik XLR 3-pin male D-size receptacle', 'Audio'],
+  ['dmx5f', 'DMX out · XLR5 F', 'NC5FD-L-1', 'Neutrik XLR 5-pin female D-size receptacle (DMX out)', 'Audio'],
+  ['dmx5m', 'DMX in · XLR5 M', 'NC5MD-L-1', 'Neutrik XLR 5-pin male D-size receptacle (DMX in)', 'Audio'],
+  ['combo', 'Combo XLR + 1/4"', 'NCJ6FI-S', 'Neutrik combo XLR female + 1/4" jack D-size receptacle', 'Audio'],
+  ['trs', '1/4" TRS jack', 'NJ3FP6C', 'Neutrik 1/4" stereo jack D-size receptacle', 'Audio'],
+  ['rca', 'RCA dual', 'NF2D-B-2', 'Neutrik dual RCA D-size feedthrough', 'Audio'],
+  ['toslink', 'Toslink optical', 'NATOS-B', 'Toslink optical audio D-size feedthrough', 'Audio', true],
+  ['speakon', 'speakON 4-pole', 'NL4MP', 'Neutrik speakON 4-pole D-size receptacle', 'Audio'],
+  ['ethercon', 'etherCON RJ45', 'NE8FDP', 'Neutrik etherCON RJ45 D-size feedthrough', 'Network & fiber'],
+  ['ethercon6a', 'etherCON Cat6A', 'NE8FDX-P6-B', 'Neutrik etherCON Cat6A shielded D-size feedthrough', 'Network & fiber'],
+  ['opticalcon', 'opticalCON DUO LC', 'NO2-4FDW-A', 'Neutrik opticalCON DUO LC D-size feedthrough', 'Network & fiber'],
+  ['opticalquad', 'opticalCON QUAD', 'NO4FDW-A', 'Neutrik opticalCON QUAD 4-channel LC D-size feedthrough', 'Network & fiber', true],
+  ['sdi', 'SDI · BNC 75 Ω', 'NBB75DFIB', 'Neutrik BNC 75 Ω isolated D-size feedthrough (SDI)', 'Video & USB', true],
+  ['sdi12g', '12G-SDI · BNC', 'NBB75DFGB', 'Neutrik 12G-SDI BNC 75 Ω D-size feedthrough', 'Video & USB', true],
+  ['hdmi', 'HDMI', 'NAHDMI-W-B', 'Neutrik HDMI D-size feedthrough', 'Video & USB'],
+  ['usb', 'USB A / B', 'NAUSB-W-B', 'Neutrik USB 2.0 A/B D-size feedthrough', 'Video & USB'],
+  ['usbc', 'USB-C', 'NAUSB-C-B', 'Neutrik USB-C D-size feedthrough', 'Video & USB', true],
+  ['blank', 'Blank D cover', 'D-BLANK', 'Blank D-size cover plate', 'Other', true]
+];
+const INSERT_BY_ID = {};
+INSERTS.forEach(([id, label, part, name, group, verify]) => { INSERT_BY_ID[id] = { id, label, part, name, group, verify: !!verify }; });
+// Menu for the pickers: grouped options, with the currently chosen one marked.
+const insertMenu = (current) => [{ label: '', options: [{ id: '', label: current ? 'Remove insert (open hole)' : 'Choose insert…', selected: !current }] }]
+  .concat(['Audio', 'Network & fiber', 'Video & USB', 'Other'].map((g) => ({
+    label: g,
+    options: INSERTS.filter((x) => x[4] === g).map(([id, label]) => ({ id, label, selected: id === current }))
+  })));
+
+function dsizeFace(id) {
+  const C = 'cx="13" cy="15.5"';
+  const housing = (fill = '#222328') =>
+    `<circle ${C} r="11.3" fill="${fill}" stroke="#55585f" stroke-width=".6"/>` +
+    `<circle ${C} r="10" fill="none" stroke="rgba(0,0,0,.35)" stroke-width=".5"/>`;
+  const latch = `<rect x="10.6" y="4.5" width="4.8" height="2" rx=".6" fill="#3a3c43" stroke="#6a6d75" stroke-width=".3"/>`;
+  const label = (t) => `<text x="13" y="24.4" text-anchor="middle" font-family="Arial,sans-serif" font-size="1.9" font-weight="700" fill="#8a8d95" letter-spacing=".15">${t}</text>`;
+  const at = (r, deg) => [13 + r * Math.cos((deg * Math.PI) / 180), 15.5 + r * Math.sin((deg * Math.PI) / 180)];
+  const dots = (pts, r, fill, stroke) => pts.map(([x, y]) =>
+    `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${r}" fill="${fill}"${stroke ? ` stroke="${stroke}" stroke-width=".3"` : ''}/>`).join('');
+  const XLR3 = [[10.3, 13.8], [15.7, 13.8], [13, 18.6]];
+  const XLR5 = [162, 18, 90, 234, 306].map((a) => at(4.2, a));
+  const flange = (inner) => svgUri(26, 31,
+    `<rect x=".4" y=".4" width="25.2" height="30.2" rx="2.2" fill="#18191d" stroke="#4a4d55" stroke-width=".5"/>` +
+    screwSvg(3.3, 3.3) + screwSvg(22.7, 27.7) + inner);
+  const female = (pts, extra = '') => flange(housing() + latch +
+    `<circle ${C} r="8" fill="#111215" stroke="rgba(255,255,255,.08)" stroke-width=".3"/>` +
+    `<rect x="12.2" y="7.2" width="1.6" height="1.2" fill="#060607"/>` + dots(pts, 1.05, '#030304', '#6a6d75') + extra);
+  const male = (pts) => flange(housing() +
+    `<circle ${C} r="8.6" fill="#060607"/><rect x="11.8" y="23.2" width="2.4" height="1.2" fill="#222328"/>` + dots(pts, 0.8, '#d9dce1'));
+  const hdmiPort = (x0, y0, w, h, c) => `<path d="M${x0} ${y0}h${w}v${h - c}l-${c} ${c}h-${w - 2 * c}l-${c} -${c}z"`;
+
+  switch (id) {
+    case 'xlr3f': return female(XLR3);
+    case 'xlr3m': return male(XLR3);
+    case 'dmx5f': return female(XLR5);
+    case 'dmx5m': return male(XLR5);
+    case 'combo': return female([[8.4, 12.9], [17.6, 12.9], [13, 20.7]],
+      `<circle ${C} r="3.1" fill="#030304" stroke="#b9bdc4" stroke-width=".5"/>`);
+    case 'trs': return flange(housing() +
+      `<circle ${C} r="5.2" fill="#9aa0a8" stroke="#6a6e75" stroke-width=".4"/>` +
+      `<circle ${C} r="3.3" fill="#060607" stroke="#5d6168" stroke-width=".3"/>`);
+    case 'ethercon':
+    case 'ethercon6a': return flange(housing() + latch + (id === 'ethercon6a' ? label('CAT6A') : '') +
+      `<rect x="8.2" y="10.8" width="9.6" height="8.8" rx=".6" fill="#b9bdc4" stroke="#7d828a" stroke-width=".3"/>` +
+      `<rect x="8.8" y="11.4" width="8.4" height="7.4" fill="#060607"/>` +
+      `<rect x="11.4" y="18.6" width="3.2" height="1.4" fill="#060607"/>` +
+      Array.from({ length: 8 }, (_, k) => `<rect x="${(9.35 + k * 0.95).toFixed(2)}" y="11.7" width=".42" height="1.8" fill="#c9a95a"/>`).join(''));
+    case 'sdi':
+    case 'sdi12g': return flange(housing() +
+      `<circle cx="7.9" cy="15.5" r=".75" fill="#b9bdc4"/><circle cx="18.1" cy="15.5" r=".75" fill="#b9bdc4"/>` +
+      `<circle ${C} r="4.6" fill="#b9bdc4" stroke="#7d828a" stroke-width=".3"/>` +
+      `<circle ${C} r="3.4" fill="#060607"/><circle ${C} r="2.2" fill="#e8e6df"/>` +
+      `<circle ${C} r=".55" fill="#c9a95a"/>` + label(id === 'sdi12g' ? '12G-SDI' : 'SDI'));
+    case 'hdmi': return flange(housing() +
+      hdmiPort(5.6, 12.9, 14.8, 5.2, 1.6) + ` fill="#b9bdc4" stroke="#7d828a" stroke-width=".3"/>` +
+      hdmiPort(6.3, 13.5, 13.4, 4, 1.2) + ` fill="#060607"/>` +
+      `<rect x="7.6" y="14.3" width="10.8" height="1.5" rx=".2" fill="#1c1d21"/>` +
+      `<path d="M8.2 14.75h9.6" stroke="#c9a95a" stroke-width=".45" stroke-dasharray=".3 .22"/>` + label('HDMI'));
+    case 'usb': return flange(housing() +
+      `<rect x="8.4" y="13.4" width="9.2" height="4.2" rx=".3" fill="#b9bdc4" stroke="#7d828a" stroke-width=".3"/>` +
+      `<rect x="8.9" y="13.9" width="8.2" height="3.2" fill="#060607"/>` +
+      `<rect x="9.5" y="14" width="7" height="1.3" fill="#e8e6df"/>` + label('USB'));
+    case 'usbc': return flange(housing() +
+      `<rect x="8.6" y="13.9" width="8.8" height="3.2" rx="1.6" fill="#b9bdc4" stroke="#7d828a" stroke-width=".3"/>` +
+      `<rect x="9.1" y="14.35" width="7.8" height="2.3" rx="1.15" fill="#060607"/>` +
+      `<rect x="10.2" y="15.15" width="5.6" height=".7" rx=".2" fill="#2a2b30"/>` + label('USB-C'));
+    case 'toslink': return flange(housing() +
+      `<rect x="10.2" y="12.8" width="5.6" height="5.4" rx=".4" fill="#2a2b30" stroke="#55585f" stroke-width=".3"/>` +
+      `<path d="M11.2 13.8h3.6v2.6l-1 1h-1.6l-1-1z" fill="#060607"/>` +
+      `<circle cx="13" cy="15.3" r=".6" fill="#c93b3b" opacity=".8"/>` + label('OPTICAL'));
+    case 'rca': return flange(housing() +
+      [[9, '#c93b3b'], [17, '#e8e6df']].map(([x, ring]) =>
+        `<circle cx="${x}" cy="15.5" r="3.3" fill="${ring}"/><circle cx="${x}" cy="15.5" r="2.4" fill="#b9bdc4" stroke="#7d828a" stroke-width=".3"/>` +
+        `<circle cx="${x}" cy="15.5" r="1.1" fill="#060607"/>`).join(''));
+    case 'opticalquad': return flange(housing('#8f939a') + latch +
+      `<circle ${C} r="7.6" fill="#16171a"/>` +
+      `<rect x="8.6" y="11.8" width="8.8" height="7.4" rx=".4" fill="#060607" stroke="#3a3c43" stroke-width=".3"/>` +
+      dots([[11.1, 14], [14.9, 14], [11.1, 17], [14.9, 17]], 0.75, '#e8e6df') + label('QUAD'));
+    case 'opticalcon': return flange(housing('#8f939a') + latch +
+      `<circle ${C} r="7.6" fill="#16171a"/>` +
+      `<rect x="9.2" y="13.6" width="7.6" height="3.8" rx=".4" fill="#060607" stroke="#3a3c43" stroke-width=".3"/>` +
+      `<circle cx="11.3" cy="15.5" r=".75" fill="#e8e6df"/><circle cx="14.7" cy="15.5" r=".75" fill="#e8e6df"/>` + label('LC'));
+    case 'speakon': return flange(housing() +
+      `<circle ${C} r="8.6" fill="#060607"/>` +
+      [-90, 30, 150].map((a) => {
+        const [x, y] = at(8.8, a);
+        return `<rect x="${(x - 1.1).toFixed(2)}" y="${(y - 0.9).toFixed(2)}" width="2.2" height="1.8" fill="#060607" transform="rotate(${a + 90} ${x.toFixed(2)} ${y.toFixed(2)})"/>`;
+      }).join('') +
+      [-45, 45, 135, 225].map((a) => {
+        const [x, y] = at(5.8, a);
+        return `<rect x="${(x - 1.2).toFixed(2)}" y="${(y - 0.35).toFixed(2)}" width="2.4" height=".7" rx=".25" fill="#cfd2d7" transform="rotate(${a + 90} ${x.toFixed(2)} ${y.toFixed(2)})"/>`;
+      }).join('') +
+      `<circle ${C} r="3.6" fill="#2a2b30"/><circle ${C} r="1.6" fill="#060607"/>`);
+    case 'blank': return flange(`<circle ${C} r="11.3" fill="#1d1e22" stroke="#2e3036" stroke-width=".5"/>`);
+    default: // nothing chosen yet: the bare D punchout in the plate
+      return svgUri(26, 31,
+        `<circle ${C} r="11.9" fill="rgba(0,0,0,.6)" stroke="#6a6d75" stroke-width=".5" stroke-dasharray="1.2 .8"/>` +
+        `<circle cx="3.3" cy="3.3" r="1.3" fill="#0a0a0c" stroke="#6a6d75" stroke-width=".4"/>` +
+        `<circle cx="22.7" cy="27.7" r="1.3" fill="#0a0a0c" stroke="#6a6d75" stroke-width=".4"/>` +
+        `<text x="13" y="16.3" text-anchor="middle" font-family="Arial,sans-serif" font-size="2.4" fill="#8a8d95">choose</text>`);
+  }
+}
+const DSIZE_FACES = {};
+const dsizeFaceCached = (id) => DSIZE_FACES[id] || (DSIZE_FACES[id] = dsizeFace(id));
+
 const SCREW_IN = 0.11;
-function decorate(holes, kind) {
+function decorate(holes, kind, code) {
   const pct = (v) => +((v / FACE) * 100).toFixed(2);
   const d = pct(SCREW_IN);
+  if (FACE_KINDS[kind]) return holes.map((h, j) => {
+    // Grow the cutout to the connector's flange so the face draws edge to edge
+    const square = kind === 'twist' || kind === 'veam' || kind === 'speakon';
+    const fh = square ? h.w : +((h.w * 31) / 26).toFixed(2);
+    const face = kind === 'twist' ? twistFace()
+      : kind === 'veam' ? veamFace(code)
+      : kind === 'speakon' ? speakonFace()
+      : kind === 'hdmi' ? dsizeFaceCached('hdmi')
+      : kind === 'dsize' ? dsizeFaceCached('')
+      : powerconFace(kind, (SEXES[code] || [])[j]);
+    return Object.assign({}, h, {
+      top: +(h.top - (fh - h.h) / 2).toFixed(2), h: fh, r: '0',
+      screws: [], pins: [], faces: [{ src: face }],
+      ringColor: 'transparent', ringInset: '0',
+      bd: 'transparent', trayBd: 'transparent', bg: 'transparent', sh: 'none'
+    });
+  });
   return holes.map((h) => {
     const cx = h.left + h.w / 2, cy = h.top + h.h / 2, screws = [];
     const push = (dx, dy) => screws.push({
       left: +(cx + dx - d / 2).toFixed(2), top: +(cy + dy - d / 2).toFixed(2), d
     });
     if (kind === 'xlr') { const o = h.w * 0.46; push(-o, -o); push(o, o); }
-    else if (kind === 'circ4') { const o = h.w * 0.45; push(-o, -o); push(o, -o); push(-o, o); push(o, o); }
-    else if (kind === 'pcon') { const o = h.w * 0.44; push(-o, o); push(o, -o); }
     else if (kind === 'dsub' || kind === 'multi') { const o = h.w / 2 + pct(0.085); push(-o, 0); push(o, 0); }
-    const ringed = kind === 'xlr' || kind === 'circ4' || kind === 'pcon' || kind === 'bnc';
+    const ringed = kind === 'xlr' || kind === 'bnc';
     const plan = pinPlan(kind);
     const inW = (h.w / 100) * FACE, inH = (h.h / 100) * FACE;
     const pins = plan ? plan.pts.map(([px, py]) => {
@@ -396,50 +696,46 @@ function decorate(holes, kind) {
     return Object.assign({}, h, {
       screws,
       pins,
+      faces: [],
+      bd: 'var(--color-neutral-300)', trayBd: 'var(--color-neutral-400)',
+      bg: 'rgba(0,0,0,0.55)', sh: 'inset 0 1px 2px rgba(0,0,0,0.7),0 1px 0 rgba(233,233,237,0.05)',
       ringColor: ringed ? 'var(--color-neutral-600)' : 'transparent',
-      ringInset: kind === 'circ4' ? '15%' : (kind === 'bnc' ? '26%' : '22%')
+      ringInset: kind === 'bnc' ? '26%' : '22%'
     });
   });
 }
 
 // [code, name, short, holeFn]
 const CATALOG = [
-  ['XLR & Neutrik', [
-    ['UNIV1', 'One universal XLR female punchout — Neutrik FP/MP/MDL/FDL, small Speakon, Switchcraft, Cannon, Whirlwind', '1× XLR female', () => grid(1, 1, 0.94, 0.94, '50%')],
-    ['UNIV2', 'Two universal XLR female punchouts', '2× XLR female', () => grid(2, 1, 0.94, 0.94, '50%')],
-    ['UNIV3', 'Three universal XLR female punchouts', '3× XLR female', () => grid(3, 1, 0.94, 0.94, '50%')],
-    ['UNIV4', 'Four universal XLR female punchouts', '4× XLR female', () => grid(2, 2, 0.94, 0.94, '50%')],
-    ['UNIV6', 'Six universal XLR female punchouts', '6× XLR female', () => grid(3, 2, 0.94, 0.94, '50%')],
-    ['XLR IN\n', 'Six XLR male punchouts', '6× XLR male', () => grid(3, 2, 0.9, 0.9, '50%')]
+  ['D-size (pick inserts)', [
+    ['UNIV1', 'One universal D-size punchout — pick the insert: XLR, DMX, etherCON, SDI, HDMI, USB, fiber… (Neutrik FP/MP/MDL/FDL fit)', '1× D-size, pick insert', () => grid(1, 1, 1.0, 1.0, '50%')],
+    ['UNIV2', 'Two universal D-size punchouts — pick an insert for each hole', '2× D-size, pick inserts', () => grid(2, 1, 1.0, 1.0, '50%')],
+    ['UNIV3', 'Three universal D-size punchouts — pick an insert for each hole', '3× D-size, pick inserts', () => grid(3, 1, 0.94, 0.94, '50%')],
+    ['UNIV4', 'Four universal D-size punchouts — pick an insert for each hole', '4× D-size, pick inserts', () => grid(2, 2, 0.9, 0.9, '50%')],
+    ['UNIV6', 'Six universal D-size punchouts — pick an insert for each hole', '6× D-size, pick inserts', () => grid(3, 2, 0.84, 0.84, '50%')]
   ]],
-  ['Combo & circular', [
+  ['Audio & speaker', [
+    ['XLR IN\n', 'Six XLR male punchouts', '6× XLR male', () => grid(3, 2, 0.9, 0.9, '50%')],
     ['COMBO2', 'Two combination male / female XLR punchouts', '2× combo M/F', () => grid(2, 1, 0.94, 0.94, '50%')],
     ['COMBO4', 'Four combination male / female XLR punchouts', '4× combo M/F', () => grid(2, 2, 0.94, 0.94, '50%')],
     ['COMBO6', 'Six combination male / female XLR punchouts', '6× combo M/F', () => grid(3, 2, 0.9, 0.9, '50%')],
     ['4SC1', 'One circular flange 4-bolt punchout — Cannon AP & EP, Neutrik NL8MPR / NL4MPR', '1× 4-bolt circular', () => grid(1, 1, 1.2, 1.2, '50%')],
     ['4SC3', 'Three circular flange 4-bolt punchouts', '3× 4-bolt circular', () => grid(3, 1, 1.0, 1.0, '50%')],
-    ['SPX-19', 'One Socapex 19-pin punchout', '1× Socapex 19', () => grid(1, 1, 1.35, 1.35, '50%')]
+    ['BANA2', 'Two universal dual banana punchouts', '2× dual banana', () => grid(2, 1, 0.85, 0.4, SQ)],
+    ['BANA4', 'Four universal dual banana punchouts', '4× dual banana', () => grid(2, 2, 0.85, 0.4, SQ)],
+    ['BANA6', 'Six universal dual banana punchouts', '6× dual banana', () => grid(2, 3, 0.85, 0.4, SQ)]
   ]],
-  ['BNC & video', [
+  ['Video', [
     ['1/2BNC1', 'One BNC punchout — fits 1/2" and 3/8" shells, most insulated shells and fuses', '1× BNC', () => grid(1, 1, 0.5, 0.5, '50%')],
     ['1/2BNC2', 'Two BNC punchouts', '2× BNC', () => grid(2, 1, 0.5, 0.5, '50%')],
     ['1/2BNC3', 'Three BNC punchouts', '3× BNC', () => grid(3, 1, 0.5, 0.5, '50%')],
     ['1/2BNC4', 'Four BNC punchouts', '4× BNC', () => grid(2, 2, 0.5, 0.5, '50%')],
-    ['CANARE4', 'Four Canare BNC punchouts', '4× Canare BNC', () => grid(4, 1, 0.5, 0.5, '50%')]
+    ['CANARE4', 'Four Canare BNC punchouts', '4× Canare BNC', () => grid(4, 1, 0.5, 0.5, '50%')],
+    ['HDMI1', 'One HDMI feedthrough — D-size punchout, Neutrik NAHDMI-W style', '1× HDMI', () => grid(1, 1, 1.0, 1.0, '50%')],
+    ['HDMI2', 'Two HDMI feedthroughs — D-size punchouts', '2× HDMI', () => grid(2, 1, 1.0, 1.0, '50%')],
+    ['HDMI4', 'Four HDMI feedthroughs — D-size punchouts', '4× HDMI', () => grid(2, 2, 0.9, 0.9, '50%')]
   ]],
-  ['Multipin', [
-    ['1ELCO38', 'One 38-pin Elco multipin punchout', '1× Elco 38', () => grid(1, 1, 1.7, 0.85, SQ)],
-    ['1ELCO56', 'One 56-pin Elco multipin punchout', '1× Elco 56', () => grid(1, 1, 2.0, 0.9, SQ)],
-    ['1ELCO90', 'One 90-pin Elco multipin punchout', '1× Elco 90', () => grid(1, 1, 2.4, 0.95, SQ)],
-    ['2ELCO38', 'Two 38-pin Elco multipin punchouts', '2× Elco 38', () => grid(1, 2, 1.7, 0.85, SQ)],
-    ['1W1', 'One Whirlwind multipin punchout', '1× Whirlwind', () => grid(1, 1, 1.8, 1.0, SQ)],
-    ['1W2', 'Two Whirlwind multipin punchouts', '2× Whirlwind', () => grid(1, 2, 1.8, 0.9, SQ)],
-    ['2DL96', 'Two Cannon DL series 96-pin multipin punchouts', '2× Cannon DL96', () => grid(1, 2, 2.2, 0.85, SQ)],
-    ['VEAM8', 'One VEAM 8-pair audio multipin punchout — round flange, centered', '1× VEAM 8-pair', () => grid(1, 1, 1.5, 1.5, '50%')],
-    ['VEAM12', 'One VEAM 12-pair audio multipin punchout — round flange, centered', '1× VEAM 12-pair', () => grid(1, 1, 1.8, 1.8, '50%')],
-    ['VEAM24', 'One VEAM 24-pair audio multipin punchout — round flange, centered', '1× VEAM 24-pair', () => grid(1, 1, 2.15, 2.15, '50%')]
-  ]],
-  ['Data & serial', [
+  ['Data', [
     ['1DB9', 'One DB9 punchout', '1× DB9', () => grid(1, 1, 1.2, 0.5, SQ)],
     ['2DB9', 'Two DB9 punchouts', '2× DB9', () => grid(1, 2, 1.2, 0.5, SQ)],
     ['4DB9', 'Four DB9 punchouts', '4× DB9', () => grid(2, 2, 1.2, 0.5, SQ)],
@@ -449,28 +745,38 @@ const CATALOG = [
     ['2DB25', 'Two DB25 punchouts', '2× DB25', () => grid(1, 2, 1.9, 0.5, SQ)],
     ['2DB37', 'Two DB37 punchouts', '2× DB37', () => grid(1, 2, 2.5, 0.5, SQ)]
   ]],
-  ['Jacks & drilled holes', [
+  ['Multipin & snake', [
+    ['VEAM8', 'One VEAM 8-pair audio multipin punchout — round flange, centered', '1× VEAM 8-pair', () => grid(1, 1, 1.5, 1.5, '50%')],
+    ['VEAM12', 'One VEAM 12-pair audio multipin punchout — round flange, centered', '1× VEAM 12-pair', () => grid(1, 1, 1.8, 1.8, '50%')],
+    ['VEAM24', 'One VEAM 24-pair audio multipin punchout — round flange, centered', '1× VEAM 24-pair', () => grid(1, 1, 2.15, 2.15, '50%')],
+    ['1ELCO38', 'One 38-pin Elco multipin punchout', '1× Elco 38', () => grid(1, 1, 1.7, 0.85, SQ)],
+    ['1ELCO56', 'One 56-pin Elco multipin punchout', '1× Elco 56', () => grid(1, 1, 2.0, 0.9, SQ)],
+    ['1ELCO90', 'One 90-pin Elco multipin punchout', '1× Elco 90', () => grid(1, 1, 2.4, 0.95, SQ)],
+    ['2ELCO38', 'Two 38-pin Elco multipin punchouts', '2× Elco 38', () => grid(1, 2, 1.7, 0.85, SQ)],
+    ['1W1', 'One Whirlwind multipin punchout', '1× Whirlwind', () => grid(1, 1, 1.8, 1.0, SQ)],
+    ['1W2', 'Two Whirlwind multipin punchouts', '2× Whirlwind', () => grid(1, 2, 1.8, 0.9, SQ)],
+    ['2DL96', 'Two Cannon DL series 96-pin multipin punchouts', '2× Cannon DL96', () => grid(1, 2, 2.2, 0.85, SQ)]
+  ]],
+  ['Power', [
+    ['PC20', 'One powerCON 20 A punchout — blue in, grey out', '1× powerCON 20', () => grid(1, 1, 1.0, 1.0, '50%')],
+    ['PC20X2', 'Two powerCON 20 A punchouts', '2× powerCON 20', () => grid(2, 1, 1.0, 1.0, '50%')],
+    ['PCT1M', 'One powerCON TRUE1 male (chassis inlet) punchout', '1× TRUE1 male', () => grid(1, 1, 1.05, 1.05, '50%')],
+    ['PCT1F', 'One powerCON TRUE1 female (chassis outlet) punchout', '1× TRUE1 female', () => grid(1, 1, 1.05, 1.05, '50%')],
+    ['PCT1MF', 'One powerCON TRUE1 male and one female punchout', 'TRUE1 M + F', () => grid(2, 1, 1.05, 1.05, '50%')],
+    ['TW2B', 'Two twistlock punchouts — oval pattern, fits most brands', '2× twistlock', () => grid(2, 1, 1.3, 1.3, '50%')],
+    ['TW3B', 'Three twistlock punchouts', '3× twistlock', () => grid(3, 1, 0.95, 0.95, '50%')],
+    ['DUP1', 'One duplex AC outlet punchout', '1× duplex outlet', () => grid(1, 1, 1.35, 2.6, SQ)],
+    ['DUP2', 'Two duplex AC outlet punchouts', '2× duplex outlet', () => grid(2, 1, 1.3, 2.6, SQ)],
+    ['SPX-19', 'One Socapex 19-pin punchout', '1× Socapex 19', () => grid(1, 1, 1.35, 1.35, '50%')]
+  ]],
+  ['Drilled holes', [
     ['1/4X2', 'Two 1/4" holes — RCA jacks, some switches and LEDs', '2× 1/4" hole', () => grid(2, 1, 0.25, 0.25, '50%')],
     ['1/4X4', 'Four 1/4" holes', '4× 1/4" hole', () => grid(2, 2, 0.25, 0.25, '50%')],
     ['3/8X2', 'Two 3/8" holes — phone jacks, F connectors, some switches', '2× 3/8" hole', () => grid(2, 1, 0.375, 0.375, '50%')],
     ['3/8X4', 'Four 3/8" holes', '4× 3/8" hole', () => grid(2, 2, 0.375, 0.375, '50%')],
     ['3/8X6', 'Six 3/8" holes', '6× 3/8" hole', () => grid(3, 2, 0.375, 0.375, '50%')],
     ['3/8X8', 'Eight 3/8" holes', '8× 3/8" hole', () => grid(4, 2, 0.375, 0.375, '50%')],
-    ['7/16X4', 'Four 7/16" holes — Switchcraft #11', '4× 7/16" hole', () => grid(2, 2, 0.4375, 0.4375, '50%')],
-    ['BANA2', 'Two universal dual banana punchouts', '2× dual banana', () => grid(2, 1, 0.85, 0.4, SQ)],
-    ['BANA4', 'Four universal dual banana punchouts', '4× dual banana', () => grid(2, 2, 0.85, 0.4, SQ)],
-    ['BANA6', 'Six universal dual banana punchouts', '6× dual banana', () => grid(2, 3, 0.85, 0.4, SQ)]
-  ]],
-  ['Power', [
-    ['DUP1', 'One duplex AC outlet punchout', '1× duplex outlet', () => grid(1, 1, 1.35, 2.6, SQ)],
-    ['DUP2', 'Two duplex AC outlet punchouts', '2× duplex outlet', () => grid(2, 1, 1.3, 2.6, SQ)],
-    ['TW2B', 'Two twistlock punchouts — oval pattern, fits most brands', '2× twistlock', () => grid(2, 1, 1.3, 1.3, '50%')],
-    ['TW3B', 'Three twistlock punchouts', '3× twistlock', () => grid(3, 1, 0.95, 0.95, '50%')],
-    ['PCT1M', 'One powerCON TRUE1 male (chassis inlet) punchout', '1× TRUE1 male', () => grid(1, 1, 1.05, 1.05, '50%')],
-    ['PCT1F', 'One powerCON TRUE1 female (chassis outlet) punchout', '1× TRUE1 female', () => grid(1, 1, 1.05, 1.05, '50%')],
-    ['PCT1MF', 'One powerCON TRUE1 male and one female punchout', 'TRUE1 M + F', () => grid(2, 1, 1.05, 1.05, '50%')],
-    ['PC20', 'One powerCON 20 A punchout — blue in, grey out', '1× powerCON 20', () => grid(1, 1, 1.0, 1.0, '50%')],
-    ['PC20X2', 'Two powerCON 20 A punchouts', '2× powerCON 20', () => grid(2, 1, 1.0, 1.0, '50%')]
+    ['7/16X4', 'Four 7/16" holes — Switchcraft #11', '4× 7/16" hole', () => grid(2, 2, 0.4375, 0.4375, '50%')]
   ]],
   ['Blank & vented', [
     ['UCPB1', 'Single blank module — fills an unused slot', 'Blank', () => []],
@@ -484,14 +790,41 @@ const PART_NO = {
   UNIV1: 'UCP-UNIV1', UNIV2: 'UCP-UNIV2', UNIV3: 'UCP-UNIV3',
   UNIV4: 'UCP-UNIV4', UNIV6: 'UCP-UNIV6', VT: 'UCP-VT'
 };
+// The universal plates are the D-size plates: each hole takes a chosen insert.
+const isDsize = (code) => !!code && /^UNIV/.test(code);
+// Separate DSIZE plates existed briefly; saves that used them open as UNIV.
+const RENAMED = { DSIZE1: 'UNIV1', DSIZE2: 'UNIV2', DSIZE4: 'UNIV4', DSIZE6: 'UNIV6' };
 
 // Ventilation slats and blanks are not connector punchouts — nothing to engrave.
 const NO_LABELS = { VT: true, UCPB1: true };
 
+// Extra words the tray search should match beyond code, name and category.
+const KEYWORDS = {
+  'XLR IN\n': 'xlr3 male mic input',
+  COMBO2: 'xlr trs 1/4 jack', COMBO4: 'xlr trs 1/4 jack', COMBO6: 'xlr trs 1/4 jack',
+  '4SC1': 'speakon nl4 nl8 speaker ep', '4SC3': 'speakon nl4 nl8 speaker ep',
+  BANA2: 'speaker binding post', BANA4: 'speaker binding post', BANA6: 'speaker binding post',
+  '1/2BNC1': 'sdi video coax', '1/2BNC2': 'sdi video coax', '1/2BNC3': 'sdi video coax', '1/2BNC4': 'sdi video coax',
+  CANARE4: 'sdi video coax bnc', HDMI1: 'video display', HDMI2: 'video display', HDMI4: 'video display',
+  '1DB9': 'serial rs232 rs422 dsub', '2DB9': 'serial rs232 rs422 dsub', '4DB9': 'serial rs232 rs422 dsub',
+  '1DB15': 'vga svga dsub', '2DB15': 'vga svga dsub', '1DB25': 'gpio tascam dsub', '2DB25': 'gpio tascam dsub', '2DB37': 'gpio dsub',
+  '1ELCO38': 'edac snake', '1ELCO56': 'edac snake', '1ELCO90': 'edac snake', '2ELCO38': 'edac snake',
+  VEAM8: 'audio snake cir', VEAM12: 'audio snake cir', VEAM24: 'audio snake cir',
+  'SPX-19': 'socapex lighting multicable power',
+  PC20: 'powercon ac mains', PC20X2: 'powercon ac mains',
+  PCT1M: 'powercon true1 ac mains', PCT1F: 'powercon true1 ac mains', PCT1MF: 'powercon true1 ac mains',
+  TW2B: 'nema l5 l14 twist lock ac', TW3B: 'nema l5 l14 twist lock ac',
+  DUP1: 'edison nema 5-15 ac outlet', DUP2: 'edison nema 5-15 ac outlet',
+  '1/4X2': 'rca led switch', '3/8X2': 'phone jack f connector', '7/16X4': 'switchcraft'
+};
+// D-size plates also match every insert they can take (search "etherCON" → UNIV plates).
+const INSERT_WORDS = INSERTS.map(([id, label, part, name]) => [label, part, name].join(' ')).join(' ');
+
 const BY_CODE = {};
 const ALL = [];
 CATALOG.forEach(([cat, items]) => items.forEach(([code, name, short, fn]) => {
-  const m = { code, name, short, cat, map: PART_NO[code] || code, holes: decorate(fn(), kindFor(code)), labelable: !NO_LABELS[code] };
+  const m = { code, name, short, cat, map: PART_NO[code] || code, holes: decorate(fn(), kindFor(code), code), labelable: !NO_LABELS[code] };
+  m.search = [code, name, short, cat, KEYWORDS[code] || '', isDsize(code) ? INSERT_WORDS : ''].join(' ').toLowerCase();
   BY_CODE[code] = m;
   ALL.push(m);
 }));
@@ -508,7 +841,7 @@ const rackColor = (n) => RACK_COLORS[n % RACK_COLORS.length];
 
 const rackName = (n) => 'Rack ' + (n < 26 ? String.fromCharCode(65 + n) : n + 1);
 const newRackId = (racks) => 'r' + (racks.reduce((m, r) => Math.max(m, +String(r.id).slice(1) || 0), 0) + 1);
-const emptyFrame = (name, rack) => ({ name, rack, slots: [null, null, null, null, null], slotNames: ['', '', '', '', ''], labels: {} });
+const emptyFrame = (name, rack) => ({ name, rack, slots: [null, null, null, null, null], slotNames: ['', '', '', '', ''], labels: {}, inserts: {} });
 
 // Frames stay a flat list (slot handlers index into it); each one names its rack.
 // Saves from before racks existed have no `racks`, so they land in a single rack.
@@ -517,15 +850,20 @@ function normalizeProject(data) {
   const racks = Array.isArray(data.racks) && data.racks.length ? data.racks : [{ id: 'r1', name: rackName(0) }];
   if (!data.frames.length && !Array.isArray(data.racks)) return null;
   const ids = racks.map((r) => r.id);
-  const frames = data.frames.map((f) => (ids.indexOf(f.rack) >= 0 ? f : Object.assign({}, f, { rack: ids[0] })));
+  const frames = data.frames.map((f) => Object.assign({}, f, {
+    rack: ids.indexOf(f.rack) >= 0 ? f.rack : ids[0],
+    slots: (f.slots || []).map((c) => RENAMED[c] || c),
+    inserts: f.inserts || {}
+  }));
   return { racks, frames };
 }
 
 class Component extends DCLogic {
   state = {
     racks: [{ id: 'r1', name: 'Rack A' }],
-    frames: [{ name: 'Frame 1', rack: 'r1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], slotNames: ['', '', '', '', ''], labels: {} }],
-    filter: 'All', picked: null, over: '', saveNote: ''
+    frames: [{ name: 'Frame 1', rack: 'r1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], slotNames: ['', '', '', '', ''], labels: {},
+      inserts: { '0:0': 'xlr3f', '0:1': 'xlr3f', '0:2': 'xlr3f', '0:3': 'xlr3f', '1:0': 'ethercon', '1:1': 'ethercon', '1:2': 'dmx5f', '1:3': 'hdmi' } }],
+    filter: 'All', query: '', picked: null, over: '', saveNote: ''
   };
 
   componentDidMount() {
@@ -582,6 +920,14 @@ class Component extends DCLogic {
     });
   }
 
+  setInsert(fi, key, v) {
+    this.patchFrame(fi, (f) => {
+      const inserts = Object.assign({}, f.inserts);
+      if (v) inserts[key] = v; else delete inserts[key];
+      return { inserts };
+    });
+  }
+
   place(fi, i, code) {
     this.setState((s) => {
       const f = s.frames[fi];
@@ -589,7 +935,7 @@ class Component extends DCLogic {
       const slots = f.slots.slice();
       slots[i] = code;
       const frames = s.frames.slice();
-      frames[fi] = Object.assign({}, f, { slots, labels: dropSlotLabels(f.labels, i) });
+      frames[fi] = Object.assign({}, f, { slots, labels: dropSlotLabels(f.labels, i), inserts: dropSlotLabels(f.inserts || {}, i) });
       return { frames, over: '', picked: null };
     });
   }
@@ -625,27 +971,30 @@ class Component extends DCLogic {
   }
 
   // Move a placed module to another slot (any frame), swapping with whatever is there.
-  // The module's custom slot name and per-hole labels travel with it.
+  // The module's custom slot name, per-hole labels and D-size inserts travel with it.
   moveSlot(fromF, fromI, toF, toI) {
     if (fromF === toF && fromI === toI) return this.setState({ over: '' });
     this.setState((s) => {
       const frames = s.frames.map((f) => Object.assign({}, f, {
         slots: f.slots.slice(),
         slotNames: (f.slotNames || ['', '', '', '', '']).slice(),
-        labels: Object.assign({}, f.labels)
+        labels: Object.assign({}, f.labels),
+        inserts: Object.assign({}, f.inserts)
       }));
-      const take = (f, i) => {
-        const labels = {};
-        Object.keys(f.labels).forEach((k) => {
+      const pull = (map, i) => {
+        const out = {};
+        Object.keys(map).forEach((k) => {
           const [si, j] = k.split(':');
-          if (si === String(i)) { labels[j] = f.labels[k]; delete f.labels[k]; }
+          if (si === String(i)) { out[j] = map[k]; delete map[k]; }
         });
-        return { code: f.slots[i], name: f.slotNames[i], labels };
+        return out;
       };
+      const take = (f, i) => ({ code: f.slots[i], name: f.slotNames[i], labels: pull(f.labels, i), inserts: pull(f.inserts, i) });
       const put = (f, i, p) => {
         f.slots[i] = p.code;
         f.slotNames[i] = p.name || '';
         Object.keys(p.labels).forEach((j) => { f.labels[i + ':' + j] = p.labels[j]; });
+        Object.keys(p.inserts).forEach((j) => { f.inserts[i + ':' + j] = p.inserts[j]; });
       };
       const a = take(frames[fromF], fromI);
       const b = take(frames[toF], toI);
@@ -659,18 +1008,32 @@ class Component extends DCLogic {
     this.patchFrame(fi, (f) => {
       const slots = f.slots.slice();
       slots[i] = null;
-      return { slots, labels: dropSlotLabels(f.labels, i) };
+      return { slots, labels: dropSlotLabels(f.labels, i), inserts: dropSlotLabels(f.inserts || {}, i) };
     });
   }
 
   renderVals() {
-    const { racks, frames, filter, picked, over, saveNote } = this.state;
+    const { racks, frames, filter, query, picked, over, saveNote } = this.state;
     const filled = frames.reduce((n, f) => n + f.slots.filter(Boolean).length, 0);
 
-    const holesFor = (labels, code, i) => (code ? BY_CODE[code].holes : []).map((h, j) => ({
+    const fiOf = (f) => frames.indexOf(f);
+    const holesFor = (f, code, i) => (code ? BY_CODE[code].holes : []).map((h, j) => ({
       left: h.left, top: h.top, w: h.w, h: h.h, r: h.r,
       screws: h.screws, ringColor: h.ringColor, ringInset: h.ringInset, pins: h.pins,
-      label: (code && BY_CODE[code].labelable && labels[i + ':' + j]) || '',
+      faces: isDsize(code) ? [{ src: dsizeFaceCached((f.inserts || {})[i + ':' + j] || '') }] : h.faces,
+      // An invisible native <select> over each D-size hole: click the hole, pick the insert.
+      pickers: isDsize(code) ? [(() => {
+        const cur = (f.inserts || {})[i + ':' + j] || '';
+        return {
+          value: cur,
+          groups: insertMenu(cur),
+          title: 'Hole ' + (j + 1) + ': ' + (cur ? INSERT_BY_ID[cur].label : 'no insert') + ' — click to change',
+          onChange: (e) => this.setInsert(fiOf(f), i + ':' + j, e.target.value),
+          stop: (e) => e.stopPropagation()
+        };
+      })()] : [],
+      bd: h.bd, bg: h.bg, sh: h.sh,
+      label: (code && BY_CODE[code].labelable && f.labels[i + ':' + j]) || '',
       labelLeft: +(h.left + h.w / 2 - 14).toFixed(2),
       labelTop: +(h.top + h.h + 1.2).toFixed(2),
       labelW: 28
@@ -692,7 +1055,7 @@ class Component extends DCLogic {
       removeOpacity: 1,
       removeTitle: 'Remove this frame',
       onRemove: () => this.setState((s) => ({ frames: s.frames.filter((x, k) => k !== fi) })),
-      onReset: () => this.patchFrame(fi, { slots: [null, null, null, null, null], labels: {} }),
+      onReset: () => this.patchFrame(fi, { slots: [null, null, null, null, null], labels: {}, inserts: {} }),
       slots: f.slots.map((code, i) => {
         const m = code ? BY_CODE[code] : null;
         const key = fi + '/' + i;
@@ -710,7 +1073,7 @@ class Component extends DCLogic {
               return { slotNames };
             });
           },
-          holes: holesFor(f.labels, code, i),
+          holes: holesFor(f, code, i),
           title: m ? m.name + ' — drag to move or swap' : 'Empty — drag a module here',
           faceCursor: m ? 'grab' : 'pointer',
           onDragStart: (e) => { e.dataTransfer.setData('text/plain', 'slot:' + fi + '/' + i); e.dataTransfer.effectAllowed = 'move'; },
@@ -749,7 +1112,9 @@ class Component extends DCLogic {
       onClick: () => this.setState({ filter: name })
     }));
 
-    const tray = ALL.filter((m) => filter === 'All' || m.cat === filter).map((m) => ({
+    // Every word typed must appear somewhere in the module's code, name, category or keywords.
+    const terms = (query || '').toLowerCase().split(/\s+/).filter(Boolean);
+    const tray = ALL.filter((m) => (filter === 'All' || m.cat === filter) && terms.every((t) => m.search.indexOf(t) >= 0)).map((m) => ({
       code: m.code,
       short: m.short,
       holes: m.holes,
@@ -761,10 +1126,20 @@ class Component extends DCLogic {
     }));
 
     const bomFor = (fs) => {
-      const counts = {};
-      fs.forEach((f) => f.slots.forEach((c) => { if (c) counts[c] = (counts[c] || 0) + 1; }));
+      const counts = {}, inserts = {};
+      fs.forEach((f) => f.slots.forEach((c, i) => {
+        if (!c) return;
+        counts[c] = (counts[c] || 0) + 1;
+        if (isDsize(c)) BY_CODE[c].holes.forEach((h, j) => {
+          const id = (f.inserts || {})[i + ':' + j];
+          if (id && INSERT_BY_ID[id]) inserts[id] = (inserts[id] || 0) + 1;
+        });
+      }));
       return [{ qty: fs.length, map: 'FK2', code: 'FK2', name: '2-space (3-1/2") UCP frame kit with mounting hardware' }]
-        .concat(Object.keys(counts).map((c) => ({ qty: counts[c], map: BY_CODE[c].map, code: BY_CODE[c].code, name: BY_CODE[c].name })));
+        .concat(Object.keys(counts).map((c) => ({ qty: counts[c], map: BY_CODE[c].map, code: BY_CODE[c].code, name: BY_CODE[c].name })))
+        .concat(INSERTS.filter(([id]) => inserts[id]).map(([id, label, part, name, group, verify]) => ({
+          qty: inserts[id], map: part, code: 'D insert', name: name + (verify ? ' — confirm part # before ordering' : '')
+        })));
     };
     const bom = bomFor(frames);
     const rackBoms = racks.map((r, ri) => ({
@@ -804,6 +1179,11 @@ class Component extends DCLogic {
           slotName: ((f.slotNames || [])[i] || '').trim() || 'Slot ' + (i + 1),
           code: BY_CODE[code].code,
           fields: BY_CODE[code].holes.map((h, j) => ({
+            hasInsert: isDsize(code),
+            insert: (f.inserts || {})[i + ':' + j] || '',
+            insertGroups: insertMenu((f.inserts || {})[i + ':' + j] || ''),
+            onInsert: (e) => this.setInsert(fi, i + ':' + j, e.target.value),
+            inputW: isDsize(code) ? '124px' : '70px',
             value: f.labels[i + ':' + j] || '',
             placeholder: 'Hole ' + (j + 1),
             onChange: (e) => this.setLabel(fi, i + ':' + j, e.target.value)
@@ -831,6 +1211,14 @@ class Component extends DCLogic {
       bom,
       catalog: CATALOG.map(([name, items]) => ({ name, items: items.map(([code]) => BY_CODE[code]) })),
       statusText: racks.length + (racks.length === 1 ? ' rack · ' : ' racks · ') + frames.length + (frames.length === 1 ? ' frame · ' : ' frames · ') + filled + ' of ' + frames.length * 5 + ' slots filled',
+      query: query || '',
+      hasQuery: !!query,
+      onQuery: (e) => this.setState({ query: e.target.value, filter: 'All' }),
+      onQueryKey: (e) => { if (e.key === 'Escape') this.setState({ query: '' }); },
+      onClearQuery: () => this.setState({ query: '' }),
+      trayEmpty: !tray.length,
+      trayEmptyText: 'No module matches “' + (query || '') + '”' + (filter === 'All' ? '' : ' in ' + filter) + '.',
+      trayCount: query ? tray.length + (tray.length === 1 ? ' match' : ' matches') : '',
       trayHint: picked ? 'Now click a slot to place ' + picked : 'Drag onto a slot, or click a module then a slot',
       saveText: saveNote ? 'Saved in this browser \u00b7 ' + saveNote : 'Saved in this browser',
       onDownload: () => this.downloadProject(),
