@@ -20,10 +20,12 @@ read off a parts list you can print straight to PDF.
 | **Frame layout** | A schematic front elevation of the FK2 at a true 19" × 3-1/2" aspect, with the five slots drawn to scale. Punchouts render at their real proportions from each module's hole pattern. |
 | **Module tray** | All 56 modules, filterable by category. Drag onto a slot, or click a module and then click a slot. |
 | **Multiple frames** | Add as many FK2 frames as the job needs; each gets its own name, slots and labels. |
+| **Racks** | Group frames into named racks, each with as many FK2 frames as it needs. Move a frame to another rack from its header; remove a rack together with its frames. |
+| **Move plates** | Drag a placed module onto another slot — in any frame — to move it, or to swap it with the module already there. Its name and engravings go with it. |
 | **Per-hole engraving** | Type a short label for each individual hole in a module. Labels show under the hole on the panel drawing and are collected per-frame in a sidebar. Blanks and vents have nothing to engrave. |
-| **Parts list** | A live bill of materials — the FK2 frame kits plus every module, quantity-rolled across all frames, with published part numbers. |
+| **Parts list** | A live bill of materials — the FK2 frame kits plus every module, quantity-rolled across all frames, with published part numbers. With more than one rack, a per-rack breakdown follows the job total. |
 | **Module catalog** | The full reference table, grouped by category. |
-| **Save / open** | Work autosaves to the browser. Use **Save file** / **Open file** to move a project (frames, slots and labels) as JSON. |
+| **Save / open** | Work autosaves to the browser. Use **Save file** / **Open file** to move a project (racks, frames, slots and labels) as JSON. Older files without racks open into a single rack. |
 | **PDF export** | Print with a job name stamped on the sheet. Choose *Panel + parts list* or *Panel only*; UI chrome drops out of the print. |
 
 ### Module catalog
@@ -49,7 +51,19 @@ is listed by its bare code (`1/2BNC4`, `2ELCO38`).
 
 The page pulls React 18, ReactDOM and Babel from unpkg at runtime, so it needs an
 **internet connection**. Serve it over HTTP rather than opening the file directly — the
-runtime re-fetches the page's own source on boot, which `file://` blocks:
+runtime re-fetches the page's own source on boot, which `file://` blocks.
+
+### With Docker
+
+```bash
+docker compose up -d --build
+# then open http://localhost:8000
+```
+
+The image is `nginx:alpine` serving the static files; `/` redirects to the page. Change
+the host port in `compose.yaml`. Rebuild after editing any file.
+
+### Without Docker
 
 ```bash
 python3 -m http.server 8000
@@ -69,6 +83,8 @@ support.js                  Design-canvas runtime (generated — do not edit)
 image-slot.js               User-fillable image placeholder component (starter scaffold)
 _ds/nocturne-…/             Nocturne design system: tokens, styles, component classes
 screenshots/                Reference captures
+Dockerfile, compose.yaml    Container image (nginx) and run config
+nginx.conf                  Server config: static files, / → the page
 ```
 
 ### `UCP Panel Builder.dc.html`

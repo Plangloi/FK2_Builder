@@ -1,0 +1,7 @@
+services:
+  ucp-builder:
+    build: .
+    image: ucp-panel-builder
+    ports:
+      - "8000:80"
+    restart: unless-stopped

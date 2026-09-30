@@ -78,7 +78,7 @@
         <span style="font-size:11px;color:var(--color-neutral-600)">{{ saveText }}</span>
         <button type="button" class="btn btn-ghost" onClick="{{ onDownload }}" style="font-size:12px;padding:5.6px 11.2px">Save file</button>
         <label class="btn btn-ghost" style="font-size:12px;padding:5.6px 11.2px;cursor:pointer;margin:0">Open file<input type="file" accept="application/json,.json" onChange="{{ onUpload }}" style="display:none"></label>
-        <button type="button" class="btn btn-ghost" onClick="{{ onAddFrame }}" style="font-size:12px;padding:5.6px 11.2px">+ Add FK2 frame</button>
+        <button type="button" class="btn btn-ghost" onClick="{{ onAddRack }}" style="font-size:12px;padding:5.6px 11.2px">+ Add rack</button>
       </div>
     </div>
 
@@ -114,15 +114,38 @@
       </aside>
 
       <div style="flex:1 1 640px;min-width:0">
-    <div style="display:grid;gap:22.4px">
-    <sc-for list="{{ frames }}" as="frame" hint-placeholder-count="1">
+    <div style="display:grid;gap:33.6px">
+    <sc-for list="{{ racks }}" as="rack" hint-placeholder-count="1">
+    <div style="display:grid;gap:16.8px;padding:16.8px 22.4px 22.4px;border:1px solid {{ rack.edge }};border-left:5px solid {{ rack.color }};border-radius:18px;background:{{ rack.tint }};box-shadow:var(--shadow-md);break-inside:avoid">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16.8px;padding-bottom:11.2px;border-bottom:1px solid {{ rack.edge }}">
+        <div style="display:flex;align-items:center;gap:11.2px">
+          <span style="font-size:11px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;padding:2.8px 8.4px;border-radius:99px;color:var(--color-bg);background:{{ rack.color }}">Rack {{ rack.number }}</span>
+          <input type="text" value="{{ rack.name }}" onChange="{{ rack.onRename }}" placeholder="{{ rack.namePlaceholder }}" maxLength="28" title="Name this rack" style="font-family: var(--font-heading); font-weight: 500; font-size: 18px; letter-spacing: 0.02em; color: var(--color-text); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 2.8px 5.6px; width: 220px" style-hover="border-color:var(--color-neutral-800)" style-focus="border-color:var(--color-accent-600);background:var(--color-bg)">
+          <span style="font-size:11px;color:var(--color-neutral-500)">{{ rack.status }}</span>
+        </div>
+        <div class="np" style="display:flex;gap:5.6px">
+          <button type="button" onClick="{{ rack.onAddFrame }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:4px;cursor:pointer;background:transparent;color:var(--color-accent-200);border:1px solid var(--color-accent-700)" style-hover="border-color:var(--color-accent-500);background:var(--color-accent-900)">+ Add FK2</button>
+          <button type="button" onClick="{{ rack.onRemove }}" disabled="{{ rack.removeDisabled }}" title="{{ rack.removeTitle }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:4px;cursor:{{ rack.removeCursor }};opacity:{{ rack.removeOpacity }};background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">Remove rack</button>
+        </div>
+      </div>
+      <sc-if value="{{ rack.empty }}" hint-placeholder-val="{{ false }}">
+        <div class="np" style="padding:22.4px;border:1px dashed var(--color-neutral-800);border-radius:14px;font-size:12px;color:var(--color-neutral-500)">No FK2 frames in this rack yet — use “+ Add FK2”.</div>
+      </sc-if>
+    <sc-for list="{{ rack.frames }}" as="frame" hint-placeholder-count="1">
     <div style="padding:22.4px;border:1px solid var(--color-divider);border-radius:14px;background:linear-gradient(180deg,var(--color-surface),var(--color-bg));break-inside:avoid">
       <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16.8px;margin-bottom:11.2px">
         <div style="display:flex;align-items:baseline;gap:11.2px">
           <input type="text" value="{{ frame.name }}" onChange="{{ frame.onRename }}" placeholder="{{ frame.namePlaceholder }}" maxLength="28" title="Name this frame" style="font-family: var(--font-heading); font-weight: 500; font-size: 14px; letter-spacing: 0.02em; color: var(--color-text); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 2.8px 5.6px; width: 180px" style-hover="border-color:var(--color-neutral-800)" style-focus="border-color:var(--color-accent-600);background:var(--color-bg)">
           <span style="font-size:11px;color:var(--color-neutral-500)">{{ frame.status }}</span>
         </div>
-        <div class="np" style="display:flex;gap:5.6px">
+        <div class="np" style="display:flex;gap:5.6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+          <sc-if value="{{ frame.canMove }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:11px;color:var(--color-neutral-600)">Move to</span>
+            <sc-for list="{{ frame.moveTargets }}" as="t" hint-placeholder-count="1">
+              <button type="button" onClick="{{ t.onClick }}" title="{{ t.title }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:99px;cursor:pointer;background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">{{ t.name }}</button>
+            </sc-for>
+            <span style="width:1px;height:16px;background:var(--color-divider);margin:0 4px"></span>
+          </sc-if>
           <button type="button" onClick="{{ frame.onReset }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:4px;cursor:pointer;background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">Empty frame</button>
           <button type="button" onClick="{{ frame.onRemove }}" disabled="{{ frame.removeDisabled }}" title="{{ frame.removeTitle }}" style="font-family:var(--font-body);font-size:11px;padding:4px 9px;border-radius:4px;cursor:{{ frame.removeCursor }};opacity:{{ frame.removeOpacity }};background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">Remove frame</button>
         </div>
@@ -148,7 +171,7 @@
         <div style="flex:1 1 auto;display:grid;grid-template-columns:repeat(5,1fr)">
           <sc-for list="{{ frame.slots }}" as="slot" hint-placeholder-count="5">
             <div onDragOver="{{ slot.onDragOver }}" onDragLeave="{{ slot.onDragLeave }}" onDrop="{{ slot.onDrop }}" onClick="{{ slot.onClick }}" title="{{ slot.title }}" style="position:relative;border-right:1px solid var(--color-neutral-800);cursor:pointer;background:{{ slot.bg }};transition:background 120ms ease">
-              <div style="position:absolute;inset:5% 4%;border:1px {{ slot.frameStyle }} {{ slot.frameColor }};border-radius:3px;box-shadow:inset 0 1px 0 rgba(233,233,237,0.05)"></div>
+              <div draggable="{{ slot.filled }}" onDragStart="{{ slot.onDragStart }}" onDragEnd="{{ slot.onDragEnd }}" style="position:absolute;inset:5% 4%;cursor:{{ slot.faceCursor }};border:1px {{ slot.frameStyle }} {{ slot.frameColor }};border-radius:3px;box-shadow:inset 0 1px 0 rgba(233,233,237,0.05)"></div>
               <sc-for list="{{ slot.holes }}" as="h" hint-placeholder-count="0">
                 <div style="position:absolute;inset:0;pointer-events:none">
                   <div style="position:absolute;left:{{ h.left }}%;top:{{ h.top }}%;width:{{ h.w }}%;height:{{ h.h }}%;border:1px solid var(--color-neutral-300);border-radius:{{ h.r }};background:rgba(0,0,0,0.55);box-shadow:inset 0 1px 2px rgba(0,0,0,0.7),0 1px 0 rgba(233,233,237,0.05)">
@@ -205,7 +228,9 @@
     </div>
     </sc-for>
     </div>
-    <button type="button" class="np" onClick="{{ onAddFrame }}" style="margin-top:16.8px;font-family:var(--font-body);font-size:12px;padding:8.4px 16.8px;border-radius:8px;cursor:pointer;background:transparent;color:var(--color-accent-200);border:1px dashed var(--color-accent-700)" style-hover="border-color:var(--color-accent-500);background:var(--color-accent-900)">+ Add another FK2 frame</button>
+    </sc-for>
+    </div>
+    <button type="button" class="np" onClick="{{ onAddRack }}" style="margin-top:22.4px;font-family:var(--font-body);font-size:12px;padding:8.4px 16.8px;border-radius:8px;cursor:pointer;background:transparent;color:var(--color-accent-200);border:1px dashed var(--color-accent-700)" style-hover="border-color:var(--color-accent-500);background:var(--color-accent-900)">+ Add rack</button>
       </div>
     </div>
   </section>
@@ -234,6 +259,26 @@
         </sc-for>
       </tbody>
     </table>
+    <sc-if value="{{ multiRack }}" hint-placeholder-val="{{ false }}">
+      <h3 style="font-family:var(--font-heading);font-weight:500;font-size:18px;margin:33.6px 0 11.2px">By rack</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22.4px">
+        <sc-for list="{{ rackBoms }}" as="rb" hint-placeholder-count="2">
+          <div style="break-inside:avoid">
+            <div style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:{{ rb.color }};margin-bottom:5.6px;padding-left:8.4px;border-left:4px solid {{ rb.color }}">{{ rb.name }}</div>
+            <table class="table" style="width:100%;border-collapse:collapse;font-size:12px">
+              <tbody>
+                <sc-for list="{{ rb.rows }}" as="r" hint-placeholder-count="2">
+                  <tr>
+                    <td style="padding:5.6px 11.2px;width:40px;color:var(--color-accent-300)">{{ r.qty }}</td>
+                    <td style="padding:5.6px 11.2px;font-variant-numeric:tabular-nums">{{ r.map }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
     <p style="font-size:11px;color:var(--color-neutral-600);margin-top:11.2px;max-width:70ch">Mounting hardware for the five modules ships with the FK2 frame kit. Empty slots should be filled with a blank or vented module.</p>
   </section>
 
@@ -457,9 +502,29 @@ function dropSlotLabels(labels, i) {
   return next;
 }
 
+// One colour per rack (cycled) so racks read apart at a glance, on screen and in the parts list.
+const RACK_COLORS = ['#968ae0', '#5fb3a8', '#d4a55a', '#d97a8f', '#6fa3d9', '#9bbf6a'];
+const rackColor = (n) => RACK_COLORS[n % RACK_COLORS.length];
+
+const rackName = (n) => 'Rack ' + (n < 26 ? String.fromCharCode(65 + n) : n + 1);
+const newRackId = (racks) => 'r' + (racks.reduce((m, r) => Math.max(m, +String(r.id).slice(1) || 0), 0) + 1);
+const emptyFrame = (name, rack) => ({ name, rack, slots: [null, null, null, null, null], slotNames: ['', '', '', '', ''], labels: {} });
+
+// Frames stay a flat list (slot handlers index into it); each one names its rack.
+// Saves from before racks existed have no `racks`, so they land in a single rack.
+function normalizeProject(data) {
+  if (!data || !Array.isArray(data.frames)) return null;
+  const racks = Array.isArray(data.racks) && data.racks.length ? data.racks : [{ id: 'r1', name: rackName(0) }];
+  if (!data.frames.length && !Array.isArray(data.racks)) return null;
+  const ids = racks.map((r) => r.id);
+  const frames = data.frames.map((f) => (ids.indexOf(f.rack) >= 0 ? f : Object.assign({}, f, { rack: ids[0] })));
+  return { racks, frames };
+}
+
 class Component extends DCLogic {
   state = {
-    frames: [{ name: 'Frame 1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], slotNames: ['', '', '', '', ''], labels: {} }],
+    racks: [{ id: 'r1', name: 'Rack A' }],
+    frames: [{ name: 'Frame 1', rack: 'r1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], slotNames: ['', '', '', '', ''], labels: {} }],
     filter: 'All', picked: null, over: '', saveNote: ''
   };
 
@@ -467,23 +532,23 @@ class Component extends DCLogic {
     try {
       const raw = window.localStorage.getItem('ucp-fk2-project');
       if (!raw) return;
-      const data = JSON.parse(raw);
-      if (data && Array.isArray(data.frames) && data.frames.length) {
-        this.setState({ frames: data.frames, saveNote: 'restored' });
-      }
+      const data = normalizeProject(JSON.parse(raw));
+      if (data) this.setState(Object.assign(data, { saveNote: 'restored' }));
     } catch (e) {}
   }
 
   componentDidUpdate() {
-    if (this._savedFrames === this.state.frames) return;
-    this._savedFrames = this.state.frames;
+    const { frames, racks } = this.state;
+    if (this._savedFrames === frames && this._savedRacks === racks) return;
+    this._savedFrames = frames;
+    this._savedRacks = racks;
     try {
-      window.localStorage.setItem('ucp-fk2-project', JSON.stringify({ frames: this.state.frames, savedAt: Date.now() }));
+      window.localStorage.setItem('ucp-fk2-project', JSON.stringify({ racks, frames, savedAt: Date.now() }));
     } catch (e) {}
   }
 
   downloadProject() {
-    const blob = new Blob([JSON.stringify({ frames: this.state.frames }, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ racks: this.state.racks, frames: this.state.frames }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'ucp-fk2-project.json';
@@ -496,10 +561,8 @@ class Component extends DCLogic {
     const r = new FileReader();
     r.onload = () => {
       try {
-        const data = JSON.parse(r.result);
-        if (data && Array.isArray(data.frames) && data.frames.length) {
-          this.setState({ frames: data.frames, picked: null, over: '', saveNote: 'loaded from file' });
-        }
+        const data = normalizeProject(JSON.parse(r.result));
+        if (data) this.setState(Object.assign(data, { picked: null, over: '', saveNote: 'loaded from file' }));
       } catch (e) { this.setState({ saveNote: "couldn't read that file" }); }
     };
     r.readAsText(file);
@@ -531,6 +594,67 @@ class Component extends DCLogic {
     });
   }
 
+  addFrame(rackId) {
+    this.setState((s) => {
+      const n = s.frames.filter((f) => f.rack === rackId).length;
+      return { frames: s.frames.concat([emptyFrame('Frame ' + (n + 1), rackId)]) };
+    });
+  }
+
+  // Moved frames go to the end of the target rack.
+  moveFrame(fi, rackId) {
+    this.setState((s) => ({
+      frames: s.frames.filter((x, k) => k !== fi).concat([Object.assign({}, s.frames[fi], { rack: rackId })])
+    }));
+  }
+
+  addRack() {
+    this.setState((s) => {
+      const id = newRackId(s.racks);
+      return { racks: s.racks.concat([{ id, name: rackName(s.racks.length) }]), frames: s.frames.concat([emptyFrame('Frame 1', id)]) };
+    });
+  }
+
+  removeRack(id) {
+    const { racks, frames } = this.state;
+    if (racks.length < 2) return;
+    const used = frames.some((f) => f.rack === id && f.slots.some(Boolean));
+    const name = (racks.find((r) => r.id === id) || {}).name || 'this rack';
+    if (used && !window.confirm('Remove ' + name + ' and all its frames?')) return;
+    this.setState((s) => ({ racks: s.racks.filter((r) => r.id !== id), frames: s.frames.filter((f) => f.rack !== id) }));
+  }
+
+  // Move a placed module to another slot (any frame), swapping with whatever is there.
+  // The module's custom slot name and per-hole labels travel with it.
+  moveSlot(fromF, fromI, toF, toI) {
+    if (fromF === toF && fromI === toI) return this.setState({ over: '' });
+    this.setState((s) => {
+      const frames = s.frames.map((f) => Object.assign({}, f, {
+        slots: f.slots.slice(),
+        slotNames: (f.slotNames || ['', '', '', '', '']).slice(),
+        labels: Object.assign({}, f.labels)
+      }));
+      const take = (f, i) => {
+        const labels = {};
+        Object.keys(f.labels).forEach((k) => {
+          const [si, j] = k.split(':');
+          if (si === String(i)) { labels[j] = f.labels[k]; delete f.labels[k]; }
+        });
+        return { code: f.slots[i], name: f.slotNames[i], labels };
+      };
+      const put = (f, i, p) => {
+        f.slots[i] = p.code;
+        f.slotNames[i] = p.name || '';
+        Object.keys(p.labels).forEach((j) => { f.labels[i + ':' + j] = p.labels[j]; });
+      };
+      const a = take(frames[fromF], fromI);
+      const b = take(frames[toF], toI);
+      put(frames[toF], toI, a);
+      put(frames[fromF], fromI, b);
+      return { frames, over: '', picked: null };
+    });
+  }
+
   clearSlot(fi, i) {
     this.patchFrame(fi, (f) => {
       const slots = f.slots.slice();
@@ -540,7 +664,7 @@ class Component extends DCLogic {
   }
 
   renderVals() {
-    const { frames, filter, picked, over, saveNote } = this.state;
+    const { racks, frames, filter, picked, over, saveNote } = this.state;
     const filled = frames.reduce((n, f) => n + f.slots.filter(Boolean).length, 0);
 
     const holesFor = (labels, code, i) => (code ? BY_CODE[code].holes : []).map((h, j) => ({
@@ -554,14 +678,20 @@ class Component extends DCLogic {
 
     const frameVals = frames.map((f, fi) => ({
       name: f.name ?? '',
-      namePlaceholder: 'Frame ' + (fi + 1),
+      namePlaceholder: 'Frame ' + (frames.slice(0, fi).filter((x) => x.rack === f.rack).length + 1),
       onRename: (e) => this.patchFrame(fi, { name: e.target.value }),
       status: f.slots.filter(Boolean).length + ' of 5 slots filled',
-      removeDisabled: frames.length < 2,
-      removeCursor: frames.length < 2 ? 'default' : 'pointer',
-      removeOpacity: frames.length < 2 ? 0.35 : 1,
-      removeTitle: frames.length < 2 ? 'A project needs at least one frame' : 'Remove frame ' + (fi + 1),
-      onRemove: () => this.setState((s) => (s.frames.length < 2 ? {} : { frames: s.frames.filter((x, k) => k !== fi) })),
+      canMove: racks.length > 1,
+      moveTargets: racks.filter((r) => r.id !== f.rack).map((r) => ({
+        name: r.name || rackName(racks.indexOf(r)),
+        title: 'Move this frame to ' + (r.name || rackName(racks.indexOf(r))),
+        onClick: () => this.moveFrame(fi, r.id)
+      })),
+      removeDisabled: false,
+      removeCursor: 'pointer',
+      removeOpacity: 1,
+      removeTitle: 'Remove this frame',
+      onRemove: () => this.setState((s) => ({ frames: s.frames.filter((x, k) => k !== fi) })),
       onReset: () => this.patchFrame(fi, { slots: [null, null, null, null, null], labels: {} }),
       slots: f.slots.map((code, i) => {
         const m = code ? BY_CODE[code] : null;
@@ -581,7 +711,10 @@ class Component extends DCLogic {
             });
           },
           holes: holesFor(f.labels, code, i),
-          title: m ? m.name : 'Empty — drag a module here',
+          title: m ? m.name + ' — drag to move or swap' : 'Empty — drag a module here',
+          faceCursor: m ? 'grab' : 'pointer',
+          onDragStart: (e) => { e.dataTransfer.setData('text/plain', 'slot:' + fi + '/' + i); e.dataTransfer.effectAllowed = 'move'; },
+          onDragEnd: () => this.setState({ over: '' }),
           bg: over === key ? 'var(--color-accent-900)' : 'transparent',
           frameColor: over === key ? 'var(--color-accent-500)' : (m ? 'var(--color-neutral-700)' : 'var(--color-neutral-800)'),
           frameStyle: over === key || !m ? 'dashed' : 'solid',
@@ -591,7 +724,9 @@ class Component extends DCLogic {
           onDrop: (e) => {
             e.preventDefault();
             const code2 = e.dataTransfer.getData('text/plain');
-            if (code2 && BY_CODE[code2]) this.place(fi, i, code2);
+            const src = /^slot:(\d+)\/(\d+)$/.exec(code2);
+            if (src) this.moveSlot(+src[1], +src[2], fi, i);
+            else if (code2 && BY_CODE[code2]) this.place(fi, i, code2);
             else this.setState({ over: '' });
           },
           filled: !!m,
@@ -625,10 +760,40 @@ class Component extends DCLogic {
       onClick: () => this.setState((s) => ({ picked: s.picked === m.code ? null : m.code }))
     }));
 
-    const counts = {};
-    frames.forEach((f) => f.slots.forEach((c) => { if (c) counts[c] = (counts[c] || 0) + 1; }));
-    const bom = [{ qty: frames.length, map: 'FK2', code: 'FK2', name: '2-space (3-1/2") UCP frame kit with mounting hardware' }]
-      .concat(Object.keys(counts).map((c) => ({ qty: counts[c], map: BY_CODE[c].map, code: BY_CODE[c].code, name: BY_CODE[c].name })));
+    const bomFor = (fs) => {
+      const counts = {};
+      fs.forEach((f) => f.slots.forEach((c) => { if (c) counts[c] = (counts[c] || 0) + 1; }));
+      return [{ qty: fs.length, map: 'FK2', code: 'FK2', name: '2-space (3-1/2") UCP frame kit with mounting hardware' }]
+        .concat(Object.keys(counts).map((c) => ({ qty: counts[c], map: BY_CODE[c].map, code: BY_CODE[c].code, name: BY_CODE[c].name })));
+    };
+    const bom = bomFor(frames);
+    const rackBoms = racks.map((r, ri) => ({
+      name: r.name || rackName(ri),
+      color: rackColor(ri),
+      rows: bomFor(frames.filter((f) => f.rack === r.id)).filter((row) => row.qty)
+    }));
+
+    const rackVals = racks.map((r, ri) => {
+      const rf = frameVals.filter((fv, fi) => frames[fi].rack === r.id);
+      return {
+        name: r.name ?? '',
+        namePlaceholder: rackName(ri),
+        number: ri + 1,
+        color: rackColor(ri),
+        tint: 'color-mix(in srgb, ' + rackColor(ri) + ' 7%, var(--color-bg))',
+        edge: 'color-mix(in srgb, ' + rackColor(ri) + ' 28%, transparent)',
+        onRename: (e) => { const v = e.target.value; this.setState((s) => ({ racks: s.racks.map((x) => (x.id === r.id ? Object.assign({}, x, { name: v }) : x)) })); },
+        status: rf.length + (rf.length === 1 ? ' FK2 frame' : ' FK2 frames'),
+        frames: rf,
+        empty: !rf.length,
+        onAddFrame: () => this.addFrame(r.id),
+        removeDisabled: racks.length < 2,
+        removeCursor: racks.length < 2 ? 'default' : 'pointer',
+        removeOpacity: racks.length < 2 ? 0.35 : 1,
+        removeTitle: racks.length < 2 ? 'A project needs at least one rack' : 'Remove this rack and its frames',
+        onRemove: () => this.removeRack(r.id)
+      };
+    });
 
     frameVals.forEach((fv, fi) => {
       const f = frames[fi];
@@ -658,19 +823,19 @@ class Component extends DCLogic {
       printScope: scope === 'Panel only' ? 'panel' : 'full',
       jobName: this.props.jobName ?? '',
       onPrint: () => window.print(),
-      frames: frameVals,
+      racks: rackVals,
+      multiRack: racks.length > 1,
+      rackBoms,
       cats,
       tray,
       bom,
       catalog: CATALOG.map(([name, items]) => ({ name, items: items.map(([code]) => BY_CODE[code]) })),
-      statusText: frames.length + (frames.length === 1 ? ' frame · ' : ' frames · ') + filled + ' of ' + frames.length * 5 + ' slots filled',
+      statusText: racks.length + (racks.length === 1 ? ' rack · ' : ' racks · ') + frames.length + (frames.length === 1 ? ' frame · ' : ' frames · ') + filled + ' of ' + frames.length * 5 + ' slots filled',
       trayHint: picked ? 'Now click a slot to place ' + picked : 'Drag onto a slot, or click a module then a slot',
       saveText: saveNote ? 'Saved in this browser \u00b7 ' + saveNote : 'Saved in this browser',
       onDownload: () => this.downloadProject(),
       onUpload: (e) => { this.loadProject(e.target.files && e.target.files[0]); e.target.value = ''; },
-      onAddFrame: () => this.setState((s) => ({
-        frames: s.frames.concat([{ name: 'Frame ' + (s.frames.length + 1), slots: [null, null, null, null, null], slotNames: ['', '', '', '', ''], labels: {} }])
-      }))
+      onAddRack: () => this.addRack()
     };
   }
 }
