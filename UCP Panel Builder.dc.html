@@ -185,7 +185,17 @@
         <div style="flex:0 0 6.58%"></div>
         <div style="flex:1 1 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:5.6px">
           <sc-for list="{{ frame.slots }}" as="slot" hint-placeholder-count="5">
-            <button type="button" onClick="{{ slot.onClear }}" disabled="{{ slot.clearDisabled }}" title="{{ slot.clearTitle }}" style="display:flex;align-items:center;justify-content:center;gap:4px;padding:4px 0;font-family:var(--font-body);font-size:11px;letter-spacing:0.04em;border-radius:4px;cursor:{{ slot.clearCursor }};opacity:{{ slot.clearOpacity }};background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">✕ Clear</button>
+            <div style="display:flex;gap:3px;min-width:0">
+            <button type="button" onClick="{{ slot.onClear }}" disabled="{{ slot.clearDisabled }}" title="{{ slot.clearTitle }}" style="flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;padding:4px 0;font-family:var(--font-body);font-size:11px;letter-spacing:0.04em;border-radius:4px;cursor:{{ slot.clearCursor }};opacity:{{ slot.clearOpacity }};background:transparent;color:var(--color-neutral-400);border:1px solid var(--color-neutral-800)" style-hover="border-color:var(--color-accent-600);color:var(--color-accent-200)">✕ Clear</button>
+            <div style="position:relative;flex:0 0 24px;width:24px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-family:var(--font-body);font-size:11px;font-weight:600;background:{{ slot.colorBg }};color:{{ slot.colorFg }};border:1px solid var(--color-neutral-700);border-radius:4px">
+              <span aria-hidden="true" style="pointer-events:none">{{ slot.colorMark }}</span>
+              <select class="res-pick" value="{{ slot.color }}" onChange="{{ slot.onColor }}" title="{{ slot.colorTitle }}" aria-label="{{ slot.colorTitle }}" style="position:absolute;inset:0;width:100%;height:100%;box-sizing:border-box;padding:0;opacity:0;cursor:pointer;border:0">
+                <sc-for list="{{ slot.colorOptions }}" as="c" hint-placeholder-count="0">
+                  <option value="{{ c.d }}" style="background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+            </div>
           </sc-for>
         </div>
         <div style="flex:0 0 6.58%"></div>
@@ -229,8 +239,8 @@
                   <div style="position:absolute;left:{{ h.labelLeft }}%;top:{{ h.labelTop }}%;width:{{ h.labelW }}%;text-align:center;font-size:max(6px,0.95cqw);line-height:1.1;letter-spacing:0.06em;text-transform:uppercase;color:var(--color-neutral-200);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.label }}</div>
                 </div>
               </sc-for>
-              <input class="np slot-engrave" type="text" value="{{ slot.nameValue }}" onChange="{{ slot.onRename }}" onClick="{{ slot.onNameClick }}" placeholder="{{ slot.namePlaceholder }}" maxLength="18" title="Rename this slot" style="position:absolute;left:8%;right:8%;bottom:7%;width:84%;box-sizing:border-box;text-align:center;font-family:var(--font-body);font-size:max(10px,1.25cqw);letter-spacing:0.14em;text-transform:uppercase;padding:1px 2px;background:transparent;color:{{ slot.labelColor }};border:1px solid transparent;border-radius:3px" style-hover="border-color:var(--color-neutral-700)" style-focus="border-color:var(--color-accent-600);background:var(--color-bg);color:var(--color-text)">
-              <div class="print-only" style="position:absolute;left:8%;right:8%;bottom:7%;text-align:center;font-size:max(10px,1.25cqw);letter-spacing:0.14em;text-transform:uppercase;color:{{ slot.labelColor }}">{{ slot.label }}</div>
+              <input class="np slot-engrave" type="text" value="{{ slot.nameValue }}" onChange="{{ slot.onRename }}" onClick="{{ slot.onNameClick }}" placeholder="{{ slot.namePlaceholder }}" maxLength="18" title="Rename this slot" style="position:absolute;left:8%;right:8%;bottom:7%;width:84%;box-sizing:border-box;text-align:center;font-family:var(--font-body);font-size:max(10px,1.25cqw);letter-spacing:0.14em;text-transform:uppercase;padding:1px 2px;background:transparent;color:{{ slot.labelColor }};border:2px solid {{ slot.nameBorder }};border-radius:3px" style-hover="border-color:{{ slot.nameHover }}" style-focus="border-color:var(--color-accent-600);background:var(--color-bg);color:var(--color-text)">
+              <div class="print-only" style="position:absolute;left:8%;right:8%;bottom:7%;box-sizing:border-box;padding:1px 2px;text-align:center;font-size:max(10px,1.25cqw);letter-spacing:0.14em;text-transform:uppercase;color:{{ slot.labelColor }};border:2px solid {{ slot.nameBorder }};border-radius:3px">{{ slot.label }}</div>
               
 
             </div>
@@ -269,7 +279,17 @@
                         </sc-for>
                       </select>
                     </sc-if>
-                    <input class="input np" type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" maxLength="10" style="width:{{ f.inputW }};box-sizing:border-box;font-family:var(--font-body);font-size:11px;padding:4px 5.6px;background:var(--color-bg);color:var(--color-text);border:1px solid var(--color-neutral-800);border-radius:4px">
+                    <div style="display:flex;gap:2px;align-items:stretch">
+                      <input class="input np" type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="{{ f.placeholder }}" maxLength="10" style="width:{{ f.inputW }};box-sizing:border-box;font-family:var(--font-body);font-size:11px;padding:4px 5.6px;background:var(--color-bg);color:var(--color-text);border:1px solid var(--color-neutral-800);border-right:{{ f.colorEdgeW }} solid {{ f.colorEdge }};border-radius:4px">
+                      <div class="np" style="position:relative;flex:0 0 24px;width:24px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-family:var(--font-body);font-size:11px;font-weight:600;background:{{ f.colorBg }};color:{{ f.colorFg }};border:1px solid var(--color-neutral-700);border-radius:4px">
+                        <span aria-hidden="true" style="pointer-events:none">{{ f.colorMark }}</span>
+                        <select class="np res-pick" value="{{ f.color }}" onChange="{{ f.onColor }}" title="{{ f.colorTitle }}" aria-label="{{ f.colorTitle }}" style="position:absolute;inset:0;width:100%;height:100%;box-sizing:border-box;padding:0;opacity:0;font-family:var(--font-body);font-size:11px;font-weight:600;cursor:pointer;appearance:none;-webkit-appearance:none;border:0">
+                        <sc-for list="{{ f.colorOptions }}" as="c" hint-placeholder-count="0">
+                          <option value="{{ c.d }}" style="background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</option>
+                        </sc-for>
+                      </select>
+                      </div>
+                    </div>
                   </div>
                 </sc-for>
               </div>
@@ -832,7 +852,19 @@ const rackColor = (n) => RACK_COLORS[n % RACK_COLORS.length];
 
 const rackName = (n) => 'Rack ' + (n < 26 ? String.fromCharCode(65 + n) : n + 1);
 const newRackId = (racks) => 'r' + (racks.reduce((m, r) => Math.max(m, +String(r.id).slice(1) || 0), 0) + 1);
-const emptyFrame = (name, rack) => ({ name, rack, slots: [null, null, null, null, null], slotNames: ['', '', '', '', ''], labels: {}, inserts: {} });
+const emptyFrame = (name, rack) => ({ name, rack, slots: [null, null, null, null, null], slotNames: ['', '', '', '', ''], slotColors: ['', '', '', '', ''], labels: {}, inserts: {}, colors: {} });
+
+// Resistor colour code (0–9) for numbering lines; shown as the label's right border.
+const RESISTOR = [
+  ['0', 'Black', '#111111', '#e9e9ed'], ['1', 'Brown', '#7b4a2a', '#ffffff'], ['2', 'Red', '#d23a2f', '#ffffff'],
+  ['3', 'Orange', '#ee8a1d', '#111111'], ['4', 'Yellow', '#f2d027', '#111111'], ['5', 'Green', '#3a9a4a', '#ffffff'],
+  ['6', 'Blue', '#2e6fd1', '#ffffff'], ['7', 'Violet', '#8a4fc9', '#ffffff'], ['8', 'Grey', '#8e8e8e', '#111111'],
+  ['9', 'White', '#f2f2f2', '#111111']
+];
+const RESISTOR_BY = {};
+RESISTOR.forEach(([d, name, bg, fg]) => { RESISTOR_BY[d] = { d, name, bg, fg }; });
+const COLOR_OPTIONS = [{ d: '', label: '–  none', bg: '#2a2b30', fg: '#e9e9ed' }]
+  .concat(RESISTOR.map(([d, name, bg, fg]) => ({ d, label: d + '  ' + name, bg, fg })));
 
 // Bumped whenever the module catalog changes. Saved files carry it so an
 // older copy of this page can tell the file is newer than it is.
@@ -857,8 +889,10 @@ function normalizeProject(data) {
       return code;
     }),
     slotNames: f.slotNames || ['', '', '', '', ''],
+    slotColors: f.slotColors || ['', '', '', '', ''],
     labels: f.labels || {},
-    inserts: f.inserts || {}
+    inserts: f.inserts || {},
+    colors: f.colors || {}
   }));
   return { racks, frames, unknown, newer: +data.version > APP_VERSION };
 }
@@ -880,7 +914,7 @@ class Component extends DCLogic {
   state = {
     racks: [{ id: 'r1', name: 'Rack A' }],
     frames: [{ name: 'Frame 1', rack: 'r1', slots: ['UNIV4', 'UNIV4', '1/2BNC4', 'VT', 'UCPB1'], slotNames: ['', '', '', '', ''], labels: {},
-      inserts: { '0:0': 'xlr3f', '0:1': 'xlr3f', '0:2': 'xlr3f', '0:3': 'xlr3f', '1:0': 'ethercon', '1:1': 'ethercon', '1:2': 'dmx5f', '1:3': 'hdmi' } }],
+      inserts: { '0:0': 'xlr3f', '0:1': 'xlr3f', '0:2': 'xlr3f', '0:3': 'xlr3f', '1:0': 'ethercon', '1:1': 'ethercon', '1:2': 'dmx5f', '1:3': 'hdmi' }, colors: {} }],
     filter: 'All', query: '', picked: null, over: '', saveNote: '', trayW: TRAY_W, trayResizing: false
   };
 
@@ -975,6 +1009,14 @@ class Component extends DCLogic {
     });
   }
 
+  setColor(fi, key, v) {
+    this.patchFrame(fi, (f) => {
+      const colors = Object.assign({}, f.colors);
+      if (v) colors[key] = v; else delete colors[key];
+      return { colors };
+    });
+  }
+
   place(fi, i, code) {
     this.setState((s) => {
       const f = s.frames[fi];
@@ -982,7 +1024,7 @@ class Component extends DCLogic {
       const slots = f.slots.slice();
       slots[i] = code;
       const frames = s.frames.slice();
-      frames[fi] = Object.assign({}, f, { slots, labels: dropSlotLabels(f.labels, i), inserts: dropSlotLabels(f.inserts || {}, i) });
+      frames[fi] = Object.assign({}, f, { slots, labels: dropSlotLabels(f.labels, i), inserts: dropSlotLabels(f.inserts || {}, i), colors: dropSlotLabels(f.colors || {}, i) });
       return { frames, over: '', picked: null };
     });
   }
@@ -1018,15 +1060,17 @@ class Component extends DCLogic {
   }
 
   // Move a placed module to another slot (any frame), swapping with whatever is there.
-  // The module's custom slot name, per-hole labels and D-size inserts travel with it.
+  // The module's custom slot name, per-hole labels, colours and D-size inserts travel with it.
   moveSlot(fromF, fromI, toF, toI) {
     if (fromF === toF && fromI === toI) return this.setState({ over: '' });
     this.setState((s) => {
       const frames = s.frames.map((f) => Object.assign({}, f, {
         slots: f.slots.slice(),
         slotNames: (f.slotNames || ['', '', '', '', '']).slice(),
+        slotColors: (f.slotColors || ['', '', '', '', '']).slice(),
         labels: Object.assign({}, f.labels),
-        inserts: Object.assign({}, f.inserts)
+        inserts: Object.assign({}, f.inserts),
+        colors: Object.assign({}, f.colors)
       }));
       const pull = (map, i) => {
         const out = {};
@@ -1036,12 +1080,14 @@ class Component extends DCLogic {
         });
         return out;
       };
-      const take = (f, i) => ({ code: f.slots[i], name: f.slotNames[i], labels: pull(f.labels, i), inserts: pull(f.inserts, i) });
+      const take = (f, i) => ({ code: f.slots[i], name: f.slotNames[i], color: f.slotColors[i], labels: pull(f.labels, i), inserts: pull(f.inserts, i), colors: pull(f.colors, i) });
       const put = (f, i, p) => {
         f.slots[i] = p.code;
         f.slotNames[i] = p.name || '';
+        f.slotColors[i] = p.color || '';
         Object.keys(p.labels).forEach((j) => { f.labels[i + ':' + j] = p.labels[j]; });
         Object.keys(p.inserts).forEach((j) => { f.inserts[i + ':' + j] = p.inserts[j]; });
+        Object.keys(p.colors).forEach((j) => { f.colors[i + ':' + j] = p.colors[j]; });
       };
       const a = take(frames[fromF], fromI);
       const b = take(frames[toF], toI);
@@ -1055,7 +1101,7 @@ class Component extends DCLogic {
     this.patchFrame(fi, (f) => {
       const slots = f.slots.slice();
       slots[i] = null;
-      return { slots, labels: dropSlotLabels(f.labels, i), inserts: dropSlotLabels(f.inserts || {}, i) };
+      return { slots, labels: dropSlotLabels(f.labels, i), inserts: dropSlotLabels(f.inserts || {}, i), colors: dropSlotLabels(f.colors || {}, i) };
     });
   }
 
@@ -1102,7 +1148,7 @@ class Component extends DCLogic {
       removeOpacity: 1,
       removeTitle: 'Remove this frame',
       onRemove: () => this.setState((s) => ({ frames: s.frames.filter((x, k) => k !== fi) })),
-      onReset: () => this.patchFrame(fi, { slots: [null, null, null, null, null], labels: {}, inserts: {} }),
+      onReset: () => this.patchFrame(fi, { slots: [null, null, null, null, null], labels: {}, inserts: {}, colors: {} }),
       slots: f.slots.map((code, i) => {
         const m = code ? BY_CODE[code] : null;
         const key = fi + '/' + i;
@@ -1110,6 +1156,27 @@ class Component extends DCLogic {
         return {
           label: custom || (m ? m.code : 'Slot ' + (i + 1)),
           nameValue: (f.slotNames || [])[i] || '',
+          ...(() => {
+            const c = RESISTOR_BY[(f.slotColors || [])[i]];
+            return {
+              color: c ? c.d : '',
+              colorMark: c ? c.d : '–',
+              colorBg: c ? c.bg : 'transparent',
+              colorFg: c ? c.fg : 'var(--color-neutral-500)',
+              colorTitle: 'Colour for slot ' + (i + 1) + ' name: ' + (c ? c.d + ' ' + c.name : 'none'),
+              colorOptions: COLOR_OPTIONS,
+              nameBorder: c ? c.bg : 'transparent',
+              nameHover: c ? c.bg : 'var(--color-neutral-700)',
+              onColor: (e) => {
+                const v = e.target.value;
+                this.patchFrame(fi, (fr) => {
+                  const slotColors = (fr.slotColors || ['', '', '', '', '']).slice();
+                  slotColors[i] = v;
+                  return { slotColors };
+                });
+              }
+            };
+          })(),
           namePlaceholder: m ? m.code : 'Slot ' + (i + 1),
           onNameClick: (e) => e.stopPropagation(),
           onRename: (e) => {
@@ -1230,7 +1297,21 @@ class Component extends DCLogic {
             insert: (f.inserts || {})[i + ':' + j] || '',
             insertGroups: insertMenu((f.inserts || {})[i + ':' + j] || ''),
             onInsert: (e) => this.setInsert(fi, i + ':' + j, e.target.value),
-            inputW: isDsize(code) ? '124px' : '70px',
+            inputW: isDsize(code) ? '98px' : '70px',
+            ...(() => {
+              const c = RESISTOR_BY[(f.colors || {})[i + ':' + j]];
+              return {
+                color: c ? c.d : '',
+                colorMark: c ? c.d : '–',
+                colorBg: c ? c.bg : 'var(--color-bg)',
+                colorFg: c ? c.fg : 'var(--color-neutral-500)',
+                colorEdge: c ? c.bg : 'var(--color-neutral-800)',
+                colorEdgeW: c ? '6px' : '1px',
+                colorTitle: 'Resistor colour for ' + 'hole ' + (j + 1) + ': ' + (c ? c.d + ' ' + c.name : 'none'),
+                colorOptions: COLOR_OPTIONS,
+                onColor: (e) => this.setColor(fi, i + ':' + j, e.target.value)
+              };
+            })(),
             value: f.labels[i + ':' + j] || '',
             placeholder: 'Hole ' + (j + 1),
             onChange: (e) => this.setLabel(fi, i + ':' + j, e.target.value)
@@ -1239,7 +1320,7 @@ class Component extends DCLogic {
       });
       fv.labelRows = rows;
       fv.labelHint = rows.length
-        ? 'Up to 10 characters each — text prints under the punchout.'
+        ? 'Up to 10 characters each — text prints under the punchout. The small box on the right sets a resistor colour (0–9) for the hole.'
         : 'Place a module with punchouts to label it.';
     });
 
