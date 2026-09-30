@@ -80,7 +80,7 @@
       </div>
       <div class="np" style="display:flex;align-items:center;gap:11.2px;font-size:12px;color:var(--color-neutral-500);flex-wrap:wrap">
         <span>{{ statusText }}</span>
-        <span style="font-size:11px;color:var(--color-neutral-600)">{{ saveText }}</span>
+        <span role="status" style="font-size:11px;color:{{ saveColor }};font-weight:{{ saveWeight }}">{{ saveText }}</span>
         <button type="button" class="btn btn-ghost" onClick="{{ onDownload }}" style="font-size:12px;padding:5.6px 11.2px">Save file</button>
         <label class="btn btn-ghost" style="font-size:12px;padding:5.6px 11.2px;cursor:pointer;margin:0">Open file<input type="file" accept="application/json,.json" onChange="{{ onUpload }}" style="display:none"></label>
         <button type="button" class="btn btn-ghost" onClick="{{ onAddRack }}" style="font-size:12px;padding:5.6px 11.2px">+ Add rack</button>
@@ -834,19 +834,42 @@ const rackName = (n) => 'Rack ' + (n < 26 ? String.fromCharCode(65 + n) : n + 1)
 const newRackId = (racks) => 'r' + (racks.reduce((m, r) => Math.max(m, +String(r.id).slice(1) || 0), 0) + 1);
 const emptyFrame = (name, rack) => ({ name, rack, slots: [null, null, null, null, null], slotNames: ['', '', '', '', ''], labels: {}, inserts: {} });
 
+// Bumped whenever the module catalog changes. Saved files carry it so an
+// older copy of this page can tell the file is newer than it is.
+const APP_VERSION = 3;
+
 // Frames stay a flat list (slot handlers index into it); each one names its rack.
 // Saves from before racks existed have no `racks`, so they land in a single rack.
+// Module codes this version doesn't know (a file from a newer version) become
+// empty slots instead of breaking the page; `unknown` lists them.
 function normalizeProject(data) {
   if (!data || !Array.isArray(data.frames)) return null;
   const racks = Array.isArray(data.racks) && data.racks.length ? data.racks : [{ id: 'r1', name: rackName(0) }];
   if (!data.frames.length && !Array.isArray(data.racks)) return null;
   const ids = racks.map((r) => r.id);
+  const unknown = [];
   const frames = data.frames.map((f) => Object.assign({}, f, {
     rack: ids.indexOf(f.rack) >= 0 ? f.rack : ids[0],
-    slots: (f.slots || []).map((c) => RENAMED[c] || c),
+    slots: [0, 1, 2, 3, 4].map((i) => {
+      const c = (f.slots || [])[i];
+      const code = RENAMED[c] || c || null;
+      if (code && !BY_CODE[code]) { unknown.push(String(code).trim()); return null; }
+      return code;
+    }),
+    slotNames: f.slotNames || ['', '', '', '', ''],
+    labels: f.labels || {},
     inserts: f.inserts || {}
   }));
-  return { racks, frames };
+  return { racks, frames, unknown, newer: +data.version > APP_VERSION };
+}
+
+// Status line after opening a project: say plainly when this page is out of date.
+function loadNote(data, ok) {
+  if (data.unknown.length || data.newer) {
+    return (data.unknown.length ? data.unknown.length + ' plate(s) not recognised (' + Array.from(new Set(data.unknown)).join(', ') + ') \u2014 ' : '')
+      + 'this file is from a newer version: refresh the page (Ctrl+Shift+R) and open it again';
+  }
+  return ok;
 }
 
 // Module tray width (px): drag the handle to resize; remembered per browser.
@@ -870,7 +893,7 @@ class Component extends DCLogic {
       const raw = window.localStorage.getItem('ucp-fk2-project');
       if (!raw) return;
       const data = normalizeProject(JSON.parse(raw));
-      if (data) this.setState(Object.assign(data, { saveNote: 'restored' }));
+      if (data) this.setState({ racks: data.racks, frames: data.frames, saveNote: loadNote(data, 'restored') });
     } catch (e) {}
   }
 
@@ -880,12 +903,12 @@ class Component extends DCLogic {
     this._savedFrames = frames;
     this._savedRacks = racks;
     try {
-      window.localStorage.setItem('ucp-fk2-project', JSON.stringify({ racks, frames, savedAt: Date.now() }));
+      window.localStorage.setItem('ucp-fk2-project', JSON.stringify({ version: APP_VERSION, racks, frames, savedAt: Date.now() }));
     } catch (e) {}
   }
 
   downloadProject() {
-    const blob = new Blob([JSON.stringify({ racks: this.state.racks, frames: this.state.frames }, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ version: APP_VERSION, racks: this.state.racks, frames: this.state.frames }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'ucp-fk2-project.json';
@@ -899,7 +922,8 @@ class Component extends DCLogic {
     r.onload = () => {
       try {
         const data = normalizeProject(JSON.parse(r.result));
-        if (data) this.setState(Object.assign(data, { picked: null, over: '', saveNote: 'loaded from file' }));
+        if (data) this.setState({ racks: data.racks, frames: data.frames, picked: null, over: '', saveNote: loadNote(data, 'loaded from file') });
+        else this.setState({ saveNote: "that file isn't a UCP panel project" });
       } catch (e) { this.setState({ saveNote: "couldn't read that file" }); }
     };
     r.readAsText(file);
@@ -1264,6 +1288,8 @@ class Component extends DCLogic {
       trayEmptyText: 'No module matches “' + (query || '') + '”' + (filter === 'All' ? '' : ' in ' + filter) + '.',
       trayCount: query ? tray.length + (tray.length === 1 ? ' match' : ' matches') : '',
       trayHint: picked ? 'Now click a slot to place ' + picked : 'Drag onto a slot, or click a module then a slot',
+      saveColor: /refresh the page|isn't a UCP|couldn't read/.test(saveNote) ? '#e8a54b' : 'var(--color-neutral-600)',
+      saveWeight: /refresh the page|isn't a UCP|couldn't read/.test(saveNote) ? 500 : 400,
       saveText: saveNote ? 'Saved in this browser \u00b7 ' + saveNote : 'Saved in this browser',
       onDownload: () => this.downloadProject(),
       onUpload: (e) => { this.loadProject(e.target.files && e.target.files[0]); e.target.value = ''; },
